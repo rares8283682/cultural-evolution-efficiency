@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this simulation framework or empirical benchmark in your research, please cite it as below."
+authors:
+  - family-names: "Olteanu"
+    given-names: "Rares"
+    affiliation: "PSAI AI & Society Master's Program, PSL University / ENS-PSL"
+title: "The Pressure for Efficiency in Cumulative Cultural Evolution: Resolving Rogers' Paradox via Adaptive Social Brains and Cognitive Division of Labor"
+version: 1.0.0
+date-released: 2026-11-03
+url: "https://github.com/rares8283682/cultural-evolution-efficiency"
+repository-code: "https://github.com/rares8283682/cultural-evolution-efficiency"
+keywords:
+  - "cultural evolution"
+  - "agent-based modeling"
+  - "computational social science"
+  - "reinforcement learning"
+  - "zipf's law of abbreviation"
+  - "rogers paradox"
+  - "q-learning"
+license: MIT
