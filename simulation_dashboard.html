@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cultural Evolution Interactive Simulator</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    input[type=range] {
+      accent-color: #2b5c8f;
+    }
+    .badge {
+      font-feature-settings: "tnum";
+    }
+  </style>
+</head>
+<body class="bg-[var(--background,#f8fafc)] text-[var(--foreground,#0f172a)] antialiased p-4 md:p-6 transition-colors">
+  <div class="max-w-7xl mx-auto space-y-6">
+
+    <!-- Header -->
+    <header class="bg-[var(--card,#ffffff)] border border-[var(--border,#e2e8f0)] rounded-2xl p-6 shadow-sm">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 text-xs font-semibold uppercase tracking-wider mb-2">
+            PSAI AI & Society Master's • ENS-PSL
+          </div>
+          <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-[var(--foreground,#0f172a)]">
+            Cultural Evolution Interactive Simulator
+          </h1>
+          <p class="text-sm text-[var(--muted-foreground,#64748b)] mt-1">
+            Real-time client-side Monte Carlo engine exploring Rogers' Paradox, Environmental Harshness $H(t)$, and Replicator Dynamics.
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button id="btnRun" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold transition-all shadow-sm flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            Re-simulate (New Seed)
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Presets -->
+      <div class="mt-5 pt-4 border-t border-[var(--border,#e2e8f0)]">
+        <div class="text-xs font-semibold text-[var(--muted-foreground,#64748b)] uppercase tracking-wider mb-2">
+          Theoretical Presets
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button class="preset-btn px-3 py-1.5 rounded-lg border border-[var(--border,#cbd5e1)] hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-medium transition-colors" data-preset="hetero">
+            🌟 Heterogeneous Society (80/10/10)
+          </button>
+          <button class="preset-btn px-3 py-1.5 rounded-lg border border-[var(--border,#cbd5e1)] hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-medium transition-colors" data-preset="replicator">
+            🧬 Endogenous Replicator (ESS)
+          </button>
+          <button class="preset-btn px-3 py-1.5 rounded-lg border border-[var(--border,#cbd5e1)] hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-medium transition-colors" data-preset="innovators">
+            💡 Pure Innovators (100%)
+          </button>
+          <button class="preset-btn px-3 py-1.5 rounded-lg border border-[var(--border,#cbd5e1)] hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-medium transition-colors" data-preset="copiers">
+            👥 Pure Copiers (100%)
+          </button>
+          <button class="preset-btn px-3 py-1.5 rounded-lg border border-[var(--border,#cbd5e1)] hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-medium transition-colors" data-preset="adaptive">
+            🧠 Homogeneous Adaptive (100%)
+          </button>
+          <button class="preset-btn px-3 py-1.5 rounded-lg border border-[var(--border,#cbd5e1)] hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-medium transition-colors text-red-600 dark:text-red-400" data-preset="crisis">
+            ⚠️ Extreme Austerity Crisis (H=18.0)
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Key Metrics Ribbon -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-[var(--card,#ffffff)] border border-[var(--border,#e2e8f0)] rounded-xl p-4 shadow-sm">
+        <div class="text-xs font-medium text-[var(--muted-foreground,#64748b)]">Cumulative Lifetime Payoff</div>
+        <div id="statCumPayoff" class="text-2xl font-bold mt-1 text-[var(--foreground,#0f172a)] badge">+7,505.8</div>
+        <div class="text-xs text-emerald-600 dark:text-emerald-400 mt-1 font-medium" id="statPayoffComment">Optimal Surplus</div>
+      </div>
+      <div class="bg-[var(--card,#ffffff)] border border-[var(--border,#e2e8f0)] rounded-xl p-4 shadow-sm">
+        <div class="text-xs font-medium text-[var(--muted-foreground,#64748b)]">Final Payoff (t=99)</div>
+        <div id="statFinalPayoff" class="text-2xl font-bold mt-1 text-[var(--foreground,#0f172a)] badge">+148.3</div>
+        <div class="text-xs text-[var(--muted-foreground,#64748b)] mt-1" id="statPreShock">Pre-Shock: +63.6</div>
+      </div>
+      <div class="bg-[var(--card,#ffffff)] border border-[var(--border,#e2e8f0)] rounded-xl p-4 shadow-sm">
+        <div class="text-xs font-medium text-[var(--muted-foreground,#64748b)]">Final Cultural Skill (z̄)</div>
+        <div id="statFinalSkill" class="text-2xl font-bold mt-1 text-[var(--foreground,#0f172a)] badge">159.7</div>
+        <div class="text-xs text-[var(--muted-foreground,#64748b)] mt-1" id="statDiversity">Diversity σ = 15.0</div>
+      </div>
+      <div class="bg-[var(--card,#ffffff)] border border-[var(--border,#e2e8f0)] rounded-xl p-4 shadow-sm">
+        <div class="text-xs font-medium text-[var(--muted-foreground,#64748b)]">Evolutionary Outcome</div>
+        <div id="statStatus" class="text-lg font-bold mt-1 text-emerald-600 dark:text-emerald-400">Thriving (Optimal ESS)</div>
+        <div class="text-xs text-[var(--muted-foreground,#64748b)] mt-1" id="statRatio">Efficiency Ratio: High</div>
+      </div>
+    </div>
+
+    <!-- Main Workspace: Controls + Interactive Charts -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- Left Column: Controls (4 cols) -->
+      <div class="lg:col-span-4 space-y-4">
+        
+        <!-- Environment & Shock Card -->
+        <div class="bg-[var(--card,#ffffff)] border border-[var(--border,#e2e8f0)] rounded-xl p-5 shadow-sm space-y-4">
+          <h3 class="text-sm font-semibold uppercase tracking-wider text-[var(--muted-foreground,#64748b)] flex items-center gap-2">
+            <span>🌍</span> Environmental Pressure H(t)
+          </h3>
+          
+          <div>
+            <div class="flex justify-between text-xs font-medium mb-1">
+              <span>Benign Harshness (H_low)</span>
+              <span id="valHlow" class="font-bold text-blue-600">2.0</span>
+            </div>
+            <input type="range" id="sliderHlow" min="0" max="10" step="0.5" value="2.0" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-medium mb-1">
+              <span>Crisis Harshness (H_high)</span>
+              <span id="valHhigh" class="font-bold text-red-600">10.0</span>
+            </div>
+            <input type="range" id="sliderHhigh" min="5" max="25" step="0.5" value="10.0" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-medium mb-1">
+              <span>Shock Generation (t_shock)</span>
+              <span id="valShockGen" class="font-bold">40</span>
+            </div>
+            <input type="range" id="sliderShockGen" min="10" max="80" step="5" value="40" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer">
+          </div>
+        </div>
+
+        <!-- Costs & Demography Card -->
+        <div class="bg-[var(--card,#ffffff)] border border-[var(--border,#e2e8f0)] rounded-xl p-5 shadow-sm space-y-4">
+          <h3 class="text-sm font-semibold uppercase tracking-wider text-[var(--muted-foreground,#64748b)] flex items-center gap-2">
+            <span>⚙️</span> Energetic Costs & Scale
+          </h3>
+
+          <div>
+            <div class="flex justify-between text-xs font-medium mb-1">
+              <span>Innovation Cost (C_innov)</span>
+              <span id="valCinnov" class="font-bold text-purple-600">5.0</span>
+            </div>
+            <input type="range" id="sliderCinnov" min="1" max="10" step="0.5" value="5.0" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-medium mb-1">
+              <span>Copying Cost (C_copy)</span>
+              <span id="valCcopy" class="font-bold text-amber-600">1.0</span>
+            </div>
+            <input type="range" id="sliderCcopy" min="0.1" max="3" step="0.1" value="1.0" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-medium mb-1">
+              <span>Population Size (N)</span>
+              <span id="valN" class="font-bold">100</span>
+            </div>
+            <input type="range" id="sliderN" min="30" max="250" step="10" value="100" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer">
+          </div>
+        </div>
+
+        <!-- Strategy Composition Card -->
+        <div class="bg-[var(--card,#ffffff)] border border-[var(--border,#e2e8f0)] rounded-xl p-5 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-semibold uppercase tracking-wider text-[var(--muted-foreground,#64748b)] flex items-center gap-2">
+              <span>👥</span> Society Composition
+            </h3>
+            <div class="flex items-center gap-1.5 text-xs">
+              <input type="checkbox" id="checkReplicator" class="rounded text-blue-600 cursor-pointer">
+              <label for="checkReplicator" class="cursor-pointer font-medium">Replicator ESS</label>
+            </div>
+          </div>
+
+          <div id="proportionsBlock" class="space-y-3">
+            <div>
+              <div class="flex justify-between text-xs font-medium mb-1">
+                <span class="text-amber-600 dark:text-amber-400">Copiers (Prestige Transmission)</span>
+                <span id="valCopiers" class="font-bold">80%</span>
+              </div>
+              <input type="range" id="sliderCopiers" min="0" max="100" step="5" value="80" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer">
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-medium mb-1">
+                <span class="text-purple-600 dark:text-purple-400">Innovators (Hatched Discovery)</span>
+                <span id="valInnovators" class="font-bold">10%</span>
+              </div>
+              <input type="range" id="sliderInnovators" min="0" max="100" step="5" value="10" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer">
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-medium mb-1">
+                <span class="text-emerald-600 dark:text-emerald-400">Adaptive Social Brain (Delta Rule)</span>
+                <span id="valAdaptive" class="font-bold">10%</span>
+              </div>
+              <input type="range" id="sliderAdaptive" min="0" max="100" step="5" value="10" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Live Responsive Charts (8 cols) -->
+      <div class="lg:col-span-8 space-y-5">
+        
+        <!-- Chart 1: Payoff Trajectory -->
+        <div class="bg-[var(--card,#ffffff)] border border-[var(--border,#e2e8f0)] rounded-xl p-5 shadow-sm">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <h2 class="text-sm font-bold text-[var(--foreground,#0f172a)]">Mean Payoff Trajectory $\bar{\Pi}(t) = \bar{z}(t) - H(t) - C$</h2>
+              <p class="text-xs text-[var(--muted-foreground,#64748b)]">Real-time economic surplus across generations</p>
+            </div>
+            <div class="flex items-center gap-3 text-xs font-medium">
+              <span class="inline-flex items-center gap-1.5"><span class="w-3 h-0.5 bg-blue-600"></span> Mean Payoff</span>
+              <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-red-100 border border-red-400 rounded-sm"></span> Crisis Zone</span>
+            </div>
+          </div>
+          <div class="relative w-full h-56">
+            <canvas id="canvasPayoff" class="w-full h-full block"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: Cultural Skill & Diversity -->
+        <div class="bg-[var(--card,#ffffff)] border border-[var(--border,#e2e8f0)] rounded-xl p-5 shadow-sm">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <h2 class="text-sm font-bold text-[var(--foreground,#0f172a)]">Cultural Complexity $\bar{z}(t)$ & Diversity $\sigma_z(t)$</h2>
+              <p class="text-xs text-[var(--muted-foreground,#64748b)]">Skill accumulation in continuous hatched-zone landscape</p>
+            </div>
+            <div class="flex items-center gap-3 text-xs font-medium">
+              <span class="inline-flex items-center gap-1.5"><span class="w-3 h-0.5 bg-pink-600"></span> Mean Skill $\bar{z}$</span>
+              <span class="inline-flex items-center gap-1.5"><span class="w-3 h-0.5 bg-slate-400 border-dashed"></span> Diversity $\sigma$</span>
+            </div>
+          </div>
+          <div class="relative w-full h-52">
+            <canvas id="canvasSkill" class="w-full h-full block"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 3: Strategy Frequencies over Time -->
+        <div class="bg-[var(--card,#ffffff)] border border-[var(--border,#e2e8f0)] rounded-xl p-5 shadow-sm">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <h2 class="text-sm font-bold text-[var(--foreground,#0f172a)]">Strategy Frequencies $x_i(t)$ Across Generations</h2>
+              <p class="text-xs text-[var(--muted-foreground,#64748b)]">Evolutionary dynamics under payoff-biased transmission</p>
+            </div>
+            <div class="flex items-center gap-3 text-xs font-medium">
+              <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Copiers</span>
+              <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-purple-600"></span> Innovators</span>
+              <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Adaptive</span>
+            </div>
+          </div>
+          <div class="relative w-full h-44">
+            <canvas id="canvasProps" class="w-full h-full block"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // --- State and Simulation Engine ---
+    const state = {
+      N: 100,
+      T: 100,
+      shockGen: 40,
+      H_low: 2.0,
+      H_high: 10.0,
+      c_copy: 1.0,
+      c_innov: 5.0,
+      alpha_prestige: 4.0,
+      gumbel_loss: 0.8,
+      gumbel_beta: 0.3,
+      innov_lambda: 1.5,
+      eta: 0.35,
+      mode: 'fixed', // 'fixed' or 'replicator'
+      props: [0.80, 0.10, 0.10]
+    };
+
+    function runSimulation() {
+      const N = state.N;
+      const T = state.T;
+      const shockGen = state.shockGen;
+      const isReplicator = (state.mode === 'replicator');
+
+      let z = new Float64Array(N).fill(1.0);
+      let qVals = Array.from({ length: N }, () => [0.0, 0.0]);
+      
+      let curProps = isReplicator ? [1/3, 1/3, 1/3] : [...state.props];
+
+      const histPayoff = new Float64Array(T);
+      const histSkill = new Float64Array(T);
+      const histDiversity = new Float64Array(T);
+      const histProps = Array.from({ length: T }, () => [0, 0, 0]);
+
+      for (let t = 0; t < T; t++) {
+        histProps[t] = [curProps[0], curProps[1], curProps[2]];
+        const H = (t >= shockGen) ? state.H_high : state.H_low;
+
+        let c0 = Math.round(curProps[0] * N);
+        let c1 = Math.round(curProps[1] * N);
+        let c2 = N - c0 - c1;
+        if (c2 < 0) { c2 = 0; c1 = N - c0; }
+
+        let actions = new Int8Array(N);
+        for (let i = c0; i < c0 + c1; i++) actions[i] = 1;
+        for (let i = c0 + c1; i < N; i++) {
+          let diff = qVals[i][1] - qVals[i][0];
+          let pInnov = 1.0 / (1.0 + Math.exp(-Math.max(-10, Math.min(10, diff))));
+          actions[i] = (Math.random() < pInnov) ? 1 : 0;
+        }
+
+        let maxZ = 0.01;
+        for (let i = 0; i < N; i++) if (z[i] > maxZ) maxZ = z[i];
+
+        let prestigeWeights = new Float64Array(N);
+        let sumPrestige = 0;
+        for (let i = 0; i < N; i++) {
+          prestigeWeights[i] = Math.pow(Math.max(z[i], 0.01) / maxZ, state.alpha_prestige);
+          sumPrestige += prestigeWeights[i];
+        }
+
+        let cumPrestige = new Float64Array(N);
+        cumPrestige[0] = prestigeWeights[0] / sumPrestige;
+        for (let i = 1; i < N; i++) cumPrestige[i] = cumPrestige[i-1] + (prestigeWeights[i] / sumPrestige);
+
+        function sampleModel() {
+          let r = Math.random();
+          let low = 0, high = N - 1;
+          while (low < high) {
+            let mid = (low + high) >> 1;
+            if (cumPrestige[mid] < r) low = mid + 1;
+            else high = mid;
+          }
+          return low;
+        }
+
+        function sampleGumbel(loc, beta) {
+          let u = Math.max(1e-7, Math.random());
+          return loc - beta * Math.log(-Math.log(u));
+        }
+
+        function sampleExp(lambda) {
+          return -lambda * Math.log(Math.max(1e-7, Math.random()));
+        }
+
+        let zNext = new Float64Array(N);
+        let costs = new Float64Array(N);
+        let payoffs = new Float64Array(N);
+        let sumPayoffs = 0;
+        let sumSkills = 0;
+
+        for (let i = 0; i < N; i++) {
+          if (actions[i] === 0) {
+            costs[i] = state.c_copy;
+            let m = sampleModel();
+            let noise = sampleGumbel(-state.gumbel_loss, state.gumbel_beta);
+            zNext[i] = Math.max(0, z[m] + noise);
+          } else {
+            costs[i] = state.c_innov;
+            let dz = sampleExp(state.innov_lambda);
+            zNext[i] = z[i] + dz;
+          }
+          payoffs[i] = zNext[i] - H - costs[i];
+          sumPayoffs += payoffs[i];
+          sumSkills += zNext[i];
+        }
+
+        for (let i = c0 + c1; i < N; i++) {
+          let act = actions[i];
+          let rpe = payoffs[i] - qVals[i][act];
+          qVals[i][act] += state.eta * rpe;
+        }
+
+        z = zNext;
+        let meanP = sumPayoffs / N;
+        let meanS = sumSkills / N;
+        histPayoff[t] = meanP;
+        histSkill[t] = meanS;
+
+        let varS = 0;
+        for (let i = 0; i < N; i++) varS += (z[i] - meanS) * (z[i] - meanS);
+        histDiversity[t] = Math.sqrt(varS / N);
+
+        if (isReplicator) {
+          let p0 = 0, n0 = 0;
+          let p1 = 0, n1 = 0;
+          let p2 = 0, n2 = 0;
+          for (let i = 0; i < c0; i++) { p0 += payoffs[i]; n0++; }
+          for (let i = c0; i < c0 + c1; i++) { p1 += payoffs[i]; n1++; }
+          for (let i = c0 + c1; i < N; i++) { p2 += payoffs[i]; n2++; }
+
+          let mp0 = n0 > 0 ? p0 / n0 : 0;
+          let mp1 = n1 > 0 ? p1 / n1 : 0;
+          let mp2 = n2 > 0 ? p2 / n2 : 0;
+
+          let minVal = Math.min(mp0, mp1, mp2);
+          let f0 = mp0 - minVal + 1.0;
+          let f1 = mp1 - minVal + 1.0;
+          let f2 = mp2 - minVal + 1.0;
+
+          let avgFit = curProps[0] * f0 + curProps[1] * f1 + curProps[2] * f2;
+          let raw0 = curProps[0] * (f0 / avgFit);
+          let raw1 = curProps[1] * (f1 / avgFit);
+          let raw2 = curProps[2] * (f2 / avgFit);
+
+          let mu = 0.03;
+          curProps[0] = (1 - mu) * raw0 + mu * (1/3);
+          curProps[1] = (1 - mu) * raw1 + mu * (1/3);
+          curProps[2] = (1 - mu) * raw2 + mu * (1/3);
+          let sumPr = curProps[0] + curProps[1] + curProps[2];
+          curProps[0] /= sumPr; curProps[1] /= sumPr; curProps[2] /= sumPr;
+        }
+      }
+
+      return { histPayoff, histSkill, histDiversity, histProps };
+    }
+
+    // --- High Performance Canvas Rendering ---
+    function setupCanvas(canvas) {
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+      return { ctx, width: rect.width, height: rect.height };
+    }
+
+    function renderCharts(res) {
+      // 1. Payoff Chart
+      {
+        const canvas = document.getElementById('canvasPayoff');
+        const { ctx, width, height } = setupCanvas(canvas);
+        const padding = { left: 45, right: 20, top: 20, bottom: 25 };
+        const chartW = width - padding.left - padding.right;
+        const chartH = height - padding.top - padding.bottom;
+
+        let minVal = -15, maxVal = 160;
+        for (let v of res.histPayoff) {
+          if (v < minVal) minVal = Math.floor(v - 5);
+          if (v > maxVal) maxVal = Math.ceil(v + 10);
+        }
+
+        // Background Crisis Zone
+        const shockX = padding.left + (state.shockGen / 100) * chartW;
+        ctx.fillStyle = 'rgba(239, 68, 68, 0.08)';
+        ctx.fillRect(shockX, padding.top, width - padding.right - shockX, chartH);
+
+        // Zero Line
+        const zeroY = padding.top + chartH * (1 - (0 - minVal) / (maxVal - minVal));
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(padding.left, zeroY);
+        ctx.lineTo(width - padding.right, zeroY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Shock Line
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(shockX, padding.top);
+        ctx.lineTo(shockX, height - padding.bottom);
+        ctx.stroke();
+
+        // Trajectory
+        ctx.beginPath();
+        ctx.strokeStyle = '#2563eb';
+        ctx.lineWidth = 2.4;
+        for (let t = 0; t < 100; t++) {
+          let x = padding.left + (t / 99) * chartW;
+          let y = padding.top + chartH * (1 - (res.histPayoff[t] - minVal) / (maxVal - minVal));
+          if (t === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+
+        // Area under curve
+        ctx.lineTo(width - padding.right, zeroY);
+        ctx.lineTo(padding.left, zeroY);
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(37, 99, 235, 0.12)';
+        ctx.fill();
+
+        // Y Axis Labels
+        ctx.fillStyle = '#64748b';
+        ctx.font = '10px sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText(`${maxVal.toFixed(0)}`, padding.left - 8, padding.top + 8);
+        ctx.fillText('0', padding.left - 8, zeroY + 3);
+        ctx.fillText(`${minVal.toFixed(0)}`, padding.left - 8, height - padding.bottom);
+
+        ctx.textAlign = 'center';
+        ctx.fillText('Crisis Shock (t=40)', shockX, padding.top - 6);
+      }
+
+      // 2. Cultural Skill & Diversity Chart
+      {
+        const canvas = document.getElementById('canvasSkill');
+        const { ctx, width, height } = setupCanvas(canvas);
+        const padding = { left: 45, right: 45, top: 15, bottom: 25 };
+        const chartW = width - padding.left - padding.right;
+        const chartH = height - padding.top - padding.bottom;
+
+        let maxSkill = 180;
+        for (let s of res.histSkill) if (s > maxSkill) maxSkill = Math.ceil(s + 20);
+
+        // Skill curve
+        ctx.beginPath();
+        ctx.strokeStyle = '#db2777';
+        ctx.lineWidth = 2.2;
+        for (let t = 0; t < 100; t++) {
+          let x = padding.left + (t / 99) * chartW;
+          let y = padding.top + chartH * (1 - res.histSkill[t] / maxSkill);
+          if (t === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+
+        // Diversity curve (right axis)
+        ctx.beginPath();
+        ctx.strokeStyle = '#64748b';
+        ctx.setLineDash([3, 3]);
+        ctx.lineWidth = 1.8;
+        for (let t = 0; t < 100; t++) {
+          let x = padding.left + (t / 99) * chartW;
+          let y = padding.top + chartH * (1 - res.histDiversity[t] / 25);
+          if (t === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = '#db2777';
+        ctx.font = '10px sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText(`${maxSkill.toFixed(0)}`, padding.left - 8, padding.top + 8);
+        ctx.fillText('0', padding.left - 8, height - padding.bottom);
+
+        ctx.fillStyle = '#64748b';
+        ctx.textAlign = 'left';
+        ctx.fillText('σ=25', width - padding.right + 6, padding.top + 8);
+        ctx.fillText('0', width - padding.right + 6, height - padding.bottom);
+      }
+
+      // 3. Strategy Proportions Chart
+      {
+        const canvas = document.getElementById('canvasProps');
+        const { ctx, width, height } = setupCanvas(canvas);
+        const padding = { left: 45, right: 20, top: 15, bottom: 25 };
+        const chartW = width - padding.left - padding.right;
+        const chartH = height - padding.top - padding.bottom;
+
+        const colors = ['#f59e0b', '#9333ea', '#10b981']; // Copiers, Innov, Adapt
+        for (let s = 0; s < 3; s++) {
+          ctx.beginPath();
+          ctx.strokeStyle = colors[s];
+          ctx.lineWidth = 2.2;
+          for (let t = 0; t < 100; t++) {
+            let x = padding.left + (t / 99) * chartW;
+            let y = padding.top + chartH * (1 - res.histProps[t][s]);
+            if (t === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+        }
+
+        ctx.fillStyle = '#64748b';
+        ctx.font = '10px sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText('100%', padding.left - 8, padding.top + 8);
+        ctx.fillText('50%', padding.left - 8, padding.top + chartH * 0.5 + 4);
+        ctx.fillText('0%', padding.left - 8, height - padding.bottom);
+      }
+    }
+
+    function updateMetrics(res) {
+      let cumP = 0;
+      for (let v of res.histPayoff) cumP += v;
+      const finP = res.histPayoff[99];
+      const preP = res.histPayoff[39];
+      const finS = res.histSkill[99];
+      const finD = res.histDiversity[99];
+
+      document.getElementById('statCumPayoff').textContent = (cumP >= 0 ? '+' : '') + cumP.toFixed(1);
+      document.getElementById('statFinalPayoff').textContent = (finP >= 0 ? '+' : '') + finP.toFixed(1);
+      document.getElementById('statPreShock').textContent = `Pre-Shock: ${(preP >= 0 ? '+' : '')}${preP.toFixed(1)}`;
+      document.getElementById('statFinalSkill').textContent = finS.toFixed(1);
+      document.getElementById('statDiversity').textContent = `Diversity σ = ${finD.toFixed(1)}`;
+
+      const statusEl = document.getElementById('statStatus');
+      const commentEl = document.getElementById('statPayoffComment');
+
+      if (finP < 0) {
+        statusEl.textContent = 'Cultural Collapse / Deficit';
+        statusEl.className = 'text-lg font-bold mt-1 text-red-600 dark:text-red-400';
+        commentEl.textContent = 'Extinction Pressure';
+        commentEl.className = 'text-xs text-red-600 dark:text-red-400 mt-1 font-medium';
+      } else if (cumP > 7000) {
+        statusEl.textContent = 'Evolutionary Optimum (High Surplus)';
+        statusEl.className = 'text-lg font-bold mt-1 text-emerald-600 dark:text-emerald-400';
+        commentEl.textContent = 'Superior Division of Labor';
+        commentEl.className = 'text-xs text-emerald-600 dark:text-emerald-400 mt-1 font-medium';
+      } else if (cumP > 4000) {
+        statusEl.textContent = 'Adaptive Equilibrium';
+        statusEl.className = 'text-lg font-bold mt-1 text-blue-600 dark:text-blue-400';
+        commentEl.textContent = 'Moderate Resilience';
+        commentEl.className = 'text-xs text-blue-600 dark:text-blue-400 mt-1 font-medium';
+      } else {
+        statusEl.textContent = 'Stagnant / Suboptimal';
+        statusEl.className = 'text-lg font-bold mt-1 text-amber-600 dark:text-amber-400';
+        commentEl.textContent = 'Cost Exhaustion';
+        commentEl.className = 'text-xs text-amber-600 dark:text-amber-400 mt-1 font-medium';
+      }
+    }
+
+    function recompute() {
+      const res = runSimulation();
+      renderCharts(res);
+      updateMetrics(res);
+    }
+
+    // --- Wire Inputs ---
+    document.getElementById('sliderHlow').addEventListener('input', e => {
+      state.H_low = parseFloat(e.target.value);
+      document.getElementById('valHlow').textContent = state.H_low.toFixed(1);
+      recompute();
+    });
+
+    document.getElementById('sliderHhigh').addEventListener('input', e => {
+      state.H_high = parseFloat(e.target.value);
+      document.getElementById('valHhigh').textContent = state.H_high.toFixed(1);
+      recompute();
+    });
+
+    document.getElementById('sliderShockGen').addEventListener('input', e => {
+      state.shockGen = parseInt(e.target.value);
+      document.getElementById('valShockGen').textContent = state.shockGen;
+      recompute();
+    });
+
+    document.getElementById('sliderCinnov').addEventListener('input', e => {
+      state.c_innov = parseFloat(e.target.value);
+      document.getElementById('valCinnov').textContent = state.c_innov.toFixed(1);
+      recompute();
+    });
+
+    document.getElementById('sliderCcopy').addEventListener('input', e => {
+      state.c_copy = parseFloat(e.target.value);
+      document.getElementById('valCcopy').textContent = state.c_copy.toFixed(1);
+      recompute();
+    });
+
+    document.getElementById('sliderN').addEventListener('input', e => {
+      state.N = parseInt(e.target.value);
+      document.getElementById('valN').textContent = state.N;
+      recompute();
+    });
+
+    document.getElementById('checkReplicator').addEventListener('change', e => {
+      state.mode = e.target.checked ? 'replicator' : 'fixed';
+      document.getElementById('proportionsBlock').style.opacity = e.target.checked ? '0.4' : '1.0';
+      recompute();
+    });
+
+    function normalizeProportions(changedIdx, val) {
+      let other1 = (changedIdx + 1) % 3;
+      let other2 = (changedIdx + 2) % 3;
+      let remaining = 1.0 - val;
+      let sumOther = state.props[other1] + state.props[other2];
+      if (sumOther > 0.001) {
+        state.props[other1] = remaining * (state.props[other1] / sumOther);
+        state.props[other2] = remaining * (state.props[other2] / sumOther);
+      } else {
+        state.props[other1] = remaining / 2;
+        state.props[other2] = remaining / 2;
+      }
+      state.props[changedIdx] = val;
+
+      document.getElementById('sliderCopiers').value = Math.round(state.props[0] * 100);
+      document.getElementById('sliderInnovators').value = Math.round(state.props[1] * 100);
+      document.getElementById('sliderAdaptive').value = Math.round(state.props[2] * 100);
+
+      document.getElementById('valCopiers').textContent = Math.round(state.props[0] * 100) + '%';
+      document.getElementById('valInnovators').textContent = Math.round(state.props[1] * 100) + '%';
+      document.getElementById('valAdaptive').textContent = Math.round(state.props[2] * 100) + '%';
+      recompute();
+    }
+
+    document.getElementById('sliderCopiers').addEventListener('input', e => {
+      normalizeProportions(0, parseInt(e.target.value) / 100);
+    });
+    document.getElementById('sliderInnovators').addEventListener('input', e => {
+      normalizeProportions(1, parseInt(e.target.value) / 100);
+    });
+    document.getElementById('sliderAdaptive').addEventListener('input', e => {
+      normalizeProportions(2, parseInt(e.target.value) / 100);
+    });
+
+    document.getElementById('btnRun').addEventListener('click', () => {
+      recompute();
+    });
+
+    // Presets
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const p = btn.dataset.preset;
+        document.getElementById('checkReplicator').checked = false;
+        state.mode = 'fixed';
+        document.getElementById('proportionsBlock').style.opacity = '1.0';
+        state.H_low = 2.0; state.H_high = 10.0; state.c_copy = 1.0; state.c_innov = 5.0; state.N = 100;
+
+        if (p === 'hetero') {
+          state.props = [0.80, 0.10, 0.10];
+        } else if (p === 'replicator') {
+          state.mode = 'replicator';
+          document.getElementById('checkReplicator').checked = true;
+          document.getElementById('proportionsBlock').style.opacity = '0.4';
+          state.props = [1/3, 1/3, 1/3];
+        } else if (p === 'innovators') {
+          state.props = [0.0, 1.0, 0.0];
+        } else if (p === 'copiers') {
+          state.props = [1.0, 0.0, 0.0];
+        } else if (p === 'adaptive') {
+          state.props = [0.0, 0.0, 1.0];
+        } else if (p === 'crisis') {
+          state.H_high = 18.0;
+          state.props = [0.80, 0.10, 0.10];
+        }
+
+        document.getElementById('sliderHlow').value = state.H_low;
+        document.getElementById('valHlow').textContent = state.H_low.toFixed(1);
+        document.getElementById('sliderHhigh').value = state.H_high;
+        document.getElementById('valHhigh').textContent = state.H_high.toFixed(1);
+        document.getElementById('sliderCinnov').value = state.c_innov;
+        document.getElementById('valCinnov').textContent = state.c_innov.toFixed(1);
+        document.getElementById('sliderCcopy').value = state.c_copy;
+        document.getElementById('valCcopy').textContent = state.c_copy.toFixed(1);
+        document.getElementById('sliderN').value = state.N;
+        document.getElementById('valN').textContent = state.N;
+
+        document.getElementById('sliderCopiers').value = Math.round(state.props[0] * 100);
+        document.getElementById('sliderInnovators').value = Math.round(state.props[1] * 100);
+        document.getElementById('sliderAdaptive').value = Math.round(state.props[2] * 100);
+        document.getElementById('valCopiers').textContent = Math.round(state.props[0] * 100) + '%';
+        document.getElementById('valInnovators').textContent = Math.round(state.props[1] * 100) + '%';
+        document.getElementById('valAdaptive').textContent = Math.round(state.props[2] * 100) + '%';
+
+        recompute();
+      });
+    });
+
+    window.addEventListener('resize', () => recompute());
+    // Initial run
+    recompute();
+  </script>
+</body>
+</html>
