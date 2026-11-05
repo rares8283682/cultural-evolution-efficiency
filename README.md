@@ -253,8 +253,8 @@ If you use this simulation framework, empirical benchmark, or theoretical extens
 
 In compliance with **PSL University** and the **PSAI AI & Society Master's Program** academic integrity regulations:
 
-- **AI Assistance**: Antigravity (Google DeepMind) was utilized as an interactive pair-programming assistant, code compiler, and document formatting utility.
-- **Scope**: NumPy array vectorization, Seaborn aesthetic configurations, LaTeX math formatting, and automated notebook compilation.
+- **AI Assistance**: Antigravity (Google DeepMind) was utilized as an interactive pair-programming assistant.
+- **Scope**: NumPy array vectorization, Seaborn aesthetic configurations, LaTeX math formatting.
 - **Author Intellectual Responsibility**: All research hypotheses, mathematical formalisms ($\Pi = z - H - C$, $P_j^\alpha F_j^\beta$ transmission bias, Rescorla-Wagner gating), integration with Cultural Attraction Theory, interpretation of empirical data, and critical revisions were conceived, supervised, mathematically verified, and validated by the student author. All simulations and tests were executed locally.
 
 ---
