@@ -37,11 +37,11 @@ python generate_figures.py
 
 ### 4. Running the Interactive Simulation Dashboard
 
-Simply open `simulation_dashboard.html` in any modern web browser or serve it locally:
+Simply open `docs/index.html` in any modern web browser or serve it locally:
 
 ```bash
 python -m http.server 8000
-# Open http://localhost:8000/simulation_dashboard.html
+# Open http://localhost:8000/docs/index.html
 ```
 
 ## Pull Request Guidelines

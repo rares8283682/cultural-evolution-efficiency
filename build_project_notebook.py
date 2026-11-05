@@ -1001,7 +1001,7 @@ import os
 import webbrowser
 from IPython.display import HTML, display
 
-dashboard_file = "simulation_dashboard.html"
+dashboard_file = os.path.join("docs", "index.html") if os.path.exists(os.path.join("docs", "index.html")) else "simulation_dashboard.html"
 with open(dashboard_file, "r", encoding="utf-8") as f:
     raw_html = f.read()
 

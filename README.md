@@ -170,9 +170,6 @@ cultural-evolution-efficiency/
 │   ├── test_arena.py                  # Unit tests for ABM & replicator dynamics
 │   ├── test_recombination.py          # Unit tests for patent citation networks
 │   └── test_empirical.py              # Unit tests for empirical benchmark pipeline
-├── Alex_Mesoudi_Papers/               # Curated archive (11 papers) & INDEX_AND_SYNTHESIS.md
-├── Mason_Youngblood_Papers/           # Curated archive (15 papers) & INDEX_AND_SYNTHESIS.md
-├── Mathieu_Charbonneau_Papers/        # Curated archive (23 papers) & INDEX_AND_SYNTHESIS.md
 ├── cultural_evolution_project.ipynb   # Master executable Jupyter Notebook (pre-executed)
 ├── simulate.py                        # Standalone CLI Monte Carlo simulation engine
 ├── generate_figures.py                # Publication figure generation script

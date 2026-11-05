@@ -47,12 +47,19 @@ venv.bak/
 ehthumbs.db
 Thumbs.db
 
-# Large raw course slides & lecture PDFs in root
-/*.pdf
+# PDFs and media
+*.pdf
 *.ogg
 
-# Local scrapings & course repo mirrors
+# Paper archives and literature collections
+*_Papers/
+*Papers*/
+Alex_Mesoudi_Papers/
+Mason_Youngblood_Papers/
+Mathieu_Charbonneau_Papers/
+
+# Local course notes, private scrapings & audits
+CONTEXT.md
 .course_repo/
 professor linkedin profile and activity/
-Alexey Papers(professors papers)/
 audit/
