@@ -174,12 +174,8 @@ cultural-evolution-efficiency/
 ├── simulate.py                        # Standalone CLI Monte Carlo simulation engine
 ├── generate_figures.py                # Publication figure generation script
 ├── build_project_notebook.py          # Programmatic compiler for master notebook
-├── pyproject.toml                     # Modern PEP 517/621 package specification
 ├── requirements.txt                   # Pinned dependency manifest
-├── Makefile                           # Developer CLI task automation
 ├── CITATION.cff                       # Citation metadata for academic researchers
-├── CONTRIBUTING.md                    # Research and open-source contribution guide
-├── CODE_OF_CONDUCT.md                 # Contributor Covenant 2.1
 ├── LICENSE                            # MIT License
 └── README.md                          # Master documentation and visual showcase
 ```

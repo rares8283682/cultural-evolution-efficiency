@@ -1,9 +1,0 @@
-# Auto-detect text files and normalize line endings
-* text=auto
-
-# Language detection overrides
-data/* linguist-vendored
-*.csv linguist-vendored
-*.ipynb linguist-detectable=true
-*.py linguist-detectable=true
-docs/* linguist-documentation
