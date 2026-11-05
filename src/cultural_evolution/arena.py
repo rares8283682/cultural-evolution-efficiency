@@ -262,34 +262,43 @@ class HarshnessCulturalArena:
     def run_fixed_mixture_sweep(
         self,
         sweep_grid: Optional[List[float]] = None,
-        n_runs: int = 20,
+        n_runs: int = 50,
     ) -> pd.DataFrame:
         """
-        Execute parametric sweep across fixed innovation probabilities (5% to 100%).
+        Execute parametric sweep across fixed copier proportions (0% to 100% in 10% steps),
+        directly implementing Prof. Alexey Koshevoy's requested experiment.
         """
         if sweep_grid is None:
-            sweep_grid = [0.05, 0.10, 0.20, 0.30, 0.50, 0.75, 1.00]
+            # Sweeping Copier Proportion: 0%, 10%, 20%, ..., 90%, 100%
+            sweep_grid = [0.0, 0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 1.00]
 
         master_rng = np.random.default_rng(self.seed + 777)
         run_seeds = master_rng.integers(100000, 999999, size=n_runs)
 
         records = []
-        for p_inv in sweep_grid:
+        for p_copier in sweep_grid:
+            p_innov = 1.0 - p_copier
             cums, pre_payoffs, post_payoffs, final_skills = [], [], [], []
             for r_seed in run_seeds:
                 r_rng = np.random.default_rng(r_seed)
-                hist = self.simulate_single_run(3, r_rng, fixed_innov_prob=p_inv)
+                hist = self.simulate_single_run(3, r_rng, fixed_innov_prob=p_innov)
                 cums.append(np.sum(hist["mean_payoff"]))
                 pre_payoffs.append(hist["mean_payoff"][self.T_shock - 1])
                 post_payoffs.append(hist["mean_payoff"][-1])
                 final_skills.append(hist["mean_skill"][-1])
 
+            mean_post = float(np.mean(post_payoffs))
+            status = "Resilient (Payoff > 0)" if mean_post > 0 else "Collapsed (Payoff < 0)"
+
             records.append({
-                "Fixed_Innov_Rate": f"{int(p_inv * 100)}%",
-                "Cumulative_Payoff": np.mean(cums),
-                "Pre_Shock_Payoff": np.mean(pre_payoffs),
-                "Post_Shock_Payoff": np.mean(post_payoffs),
-                "Final_Skill": np.mean(final_skills),
+                "Copier_Proportion": f"{int(round(p_copier * 100))}%",
+                "Innovator_Proportion": f"{int(round(p_innov * 100))}%",
+                "Pre_Shock_Payoff": float(np.mean(pre_payoffs)),
+                "Post_Shock_Payoff": mean_post,
+                "Cumulative_Payoff": float(np.mean(cums)),
+                "Std_Cumulative_Payoff": float(np.std(cums, ddof=1)),
+                "Final_Skill": float(np.mean(final_skills)),
+                "Survival_Status": status,
             })
 
         return pd.DataFrame(records)

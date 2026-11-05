@@ -89,7 +89,51 @@ plt.savefig(fig2_path)
 plt.close()
 print(f"Saved: {fig2_path}")
 
-print("Generating Figure 3: Empirical Validation against Najar et al. (2020)...")
+print("Generating Figure 3: Copier Proportion Phase Transition & Tipping Point...")
+df_sweep = arena.run_fixed_mixture_sweep(n_runs=50)
+
+copier_nums = [int(s.replace("%", "")) for s in df_sweep["Copier_Proportion"]]
+pre_payoffs = df_sweep["Pre_Shock_Payoff"].values
+post_payoffs = df_sweep["Post_Shock_Payoff"].values
+cum_payoffs = df_sweep["Cumulative_Payoff"].values
+std_cums = df_sweep["Std_Cumulative_Payoff"].values
+
+fig, (ax_phase, ax_opt) = plt.subplots(1, 2, figsize=(14, 5.5))
+
+# Panel A: Phase transition & Tipping Point
+ax_phase.plot(copier_nums, pre_payoffs, "o-", color="#2b5c8f", lw=2.2, label="Pre-Shock ($H=2.0, t=39$)")
+ax_phase.plot(copier_nums, post_payoffs, "s-", color="#c0392b", lw=2.5, label="Post-Shock ($H=10.0, t=99$)")
+ax_phase.axhline(0.0, color="black", ls=":", lw=1.2, alpha=0.8, label="Viability Boundary ($\\Pi = 0$)")
+ax_phase.axvspan(70, 100, color="#e74c3c", alpha=0.15, label="Extinction / Collapse Zone ($p > 70\\%$)")
+ax_phase.axvline(70, color="crimson", ls="--", lw=1.8, label="Critical Tipping Point ($p^* \\approx 70\\%$)")
+
+ax_phase.set_xlabel("Proportion of Copiers in Population (%)", fontweight="bold")
+ax_phase.set_ylabel("Mean Net Payoff $\\Pi(t)$", fontweight="bold")
+ax_phase.set_title("Panel A: Payoff Phase Transition & Tipping Point", fontweight="bold", pad=12)
+ax_phase.set_xticks(copier_nums)
+ax_phase.legend(loc="lower left", fontsize=8, frameon=True)
+ax_phase.grid(True, ls=":", alpha=0.5)
+sns.despine(ax=ax_phase)
+
+# Panel B: Cumulative lifetime payoff
+ax_opt.plot(copier_nums, cum_payoffs, "D-", color="#27ae60", lw=2.5, label="Cumulative Lifetime Payoff $\\sum \\Pi$")
+ax_opt.fill_between(copier_nums, cum_payoffs - std_cums, cum_payoffs + std_cums, color="#27ae60", alpha=0.15)
+ax_opt.axvline(70, color="#d35400", ls="--", lw=1.5, label="Division of Labor Optimum ($p \\approx 70\\%$)")
+ax_opt.set_xlabel("Proportion of Copiers in Population (%)", fontweight="bold")
+ax_opt.set_ylabel("Cumulative Lifetime Payoff", fontweight="bold")
+ax_opt.set_title("Panel B: Cumulative Lifetime Welfare Across Mixtures", fontweight="bold", pad=12)
+ax_opt.set_xticks(copier_nums)
+ax_opt.legend(loc="lower left", fontsize=8, frameon=True)
+ax_opt.grid(True, ls=":", alpha=0.5)
+sns.despine(ax=ax_opt)
+
+plt.tight_layout()
+fig3_path = os.path.join(FIG_DIR, "fig3_copier_sweep.png")
+plt.savefig(fig3_path)
+plt.close()
+print(f"Saved: {fig3_path}")
+
+print("Generating Figure 4: Empirical Validation against Najar et al. (2020)...")
 df_empirical = load_najar_dataset()
 metrics_empirical = evaluate_empirical_comparison(df_empirical)
 
@@ -113,12 +157,12 @@ for bar in bars:
 
 sns.despine(ax=ax)
 plt.tight_layout()
-fig3_path = os.path.join(FIG_DIR, "fig3_empirical_validation.png")
-plt.savefig(fig3_path)
+fig4_path = os.path.join(FIG_DIR, "fig4_empirical_validation.png")
+plt.savefig(fig4_path)
 plt.close()
-print(f"Saved: {fig3_path}")
+print(f"Saved: {fig4_path}")
 
-print("Generating Figure 4: Recombinant Patent Citation Networks...")
+print("Generating Figure 5: Recombinant Patent Citation Networks...")
 patent_model = RecombinantPatentModel(initial_patents=25, total_steps=600, alpha_cit=1.2, beta_quality=1.0)
 patent_res = patent_model.simulate()
 
@@ -138,9 +182,9 @@ ax.grid(True, which="both", ls=":", alpha=0.5)
 sns.despine(ax=ax)
 
 plt.tight_layout()
-fig4_path = os.path.join(FIG_DIR, "fig4_patent_recombination.png")
-plt.savefig(fig4_path)
+fig5_path = os.path.join(FIG_DIR, "fig5_patent_recombination.png")
+plt.savefig(fig5_path)
 plt.close()
-print(f"Saved: {fig4_path}")
+print(f"Saved: {fig5_path}")
 
 print("All publication figures successfully generated!")

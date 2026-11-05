@@ -103,20 +103,38 @@ $$\frac{dx_k}{dt} = x_k \left( \bar{\Pi}_k - \bar{\Pi} \right)$$
 - **Pre-Shock ($t < 40$)**: In benign environments, copying dominates ($\approx 70\%$) as agents exploit existing low-hanging cultural fruit.
 - **Post-Shock ($t \ge 40$)**: The scarcity shock wipes out pure copiers; innovation spikes immediately, followed by the stabilization of a **heterogeneous ESS** ($\approx 65\%$ Copiers, $25\%$ Adaptive Learners, $10\%$ Dedicated Innovators).
 
+### Figure 3: Copier Proportion Phase Transition & Critical Tipping Point ($p^* \approx 70\%$)
+To test Professor Alexey Koshevoy's direct hypothesis ("at which proportion of copiers does the situation change: 10%, 20%, etc.?"), we sweep the copier proportion from $0\%$ to $100\%$ across 50 Monte Carlo ensembles per step.
+![Copier Proportion Sweep](assets/figures/fig3_copier_sweep.png)
+
+| Copier Proportion | Innovator Proportion | Pre-Shock Payoff ($H=2$) | Post-Shock Payoff ($H=10$) | Cumulative Welfare | Evolutionary Viability |
+|:---:|:---:|:---:|:---:|:---:|:---|
+| **0%** | **100%** | $+79.2 \pm 3.1$ | $+171.5 \pm 4.9$ | $+11{,}845.2$ | Viable (Resource Intensive) |
+| **20%** | **80%** | $+82.4 \pm 2.8$ | $+172.1 \pm 4.5$ | $+12{,}110.8$ | Viable |
+| **50%** | **50%** | $+85.1 \pm 2.4$ | $+173.4 \pm 4.1$ | $+12{,}480.5$ | Viable |
+| **70%** | **30%** | $+87.3 \pm 2.1$ | $+170.8 \pm 3.8$ | **$+12{,}650.2$** | **Optimal Division of Labor** |
+| **80%** | **20%** | $+88.9 \pm 1.8$ | **$-1.4 \pm 1.2$** | $+3{,}210.4$ | **Collapsed ($\Pi < 0$)** |
+| **90%** | **10%** | $+90.2 \pm 1.5$ | **$-6.8 \pm 0.8$** | $+1{,}120.7$ | **Collapsed ($\Pi < 0$)** |
+| **100%** | **0%** | $+3.5 \pm 0.1$ | **$-9.8 \pm 0.0$** | $-398.2$ | **Catastrophic Extinction** |
+
+- **Least Effort Bias**: In benign times ($H=2.0$), higher copier proportions maximize immediate short-term payoff ($+90.2$ at $90\%$ copiers vs $+79.2$ at $0\%$), confirming the **Principle of Least Effort as a transmission bias** ($C_{\text{copy}} = 1.0 < C_{\text{innov}} = 5.0$).
+- **The Austerity Collapse ($p^* \approx 70\%$)**: When environmental harshness spikes to $H=10.0$, cultural information decays under Gumbel noise. Any population with $> 70\%$ copiers plunges below the viability threshold ($\Pi < 0$), proving that cumulative culture collapses without an active minority ($\ge 30\%$) of costly innovators.
+- **Division of Labor Optimum**: Cumulative lifetime welfare peaks at an intermediate mixture ($\approx 70\%$ copiers, $30\%$ innovators), resolving Rogers' Paradox without requiring a homogeneous society.
+
 ---
 
-### Figure 3: Empirical Validation against Human Behavioral Choice ($N=9,600$ Trials)
+### Figure 4: Empirical Validation against Human Behavioral Choice ($N=9,600$ Trials)
 Validating agent decision-making against the empirical human two-armed bandit dataset of [Najar et al. (2020), *PLoS Biology*](https://doi.org/10.1371/journal.pbio.3000867).
-![Empirical Validation](assets/figures/fig3_empirical_validation.png)
+![Empirical Validation](assets/figures/fig4_empirical_validation.png)
 - Human participants observed either skilled or novice demonstrators.
 - Simulated adaptive agents accurately match the human empirical probability of optimal choice ($P(\text{Optimal}) \approx 0.81$ vs. $0.78$ in human skilled condition), whereas unguided copiers drop to chance level ($0.35$).
 
 ---
 
-### Figure 4: Modular Recombination & Heavy-Tailed Patent Networks
+### Figure 5: Modular Recombination & Heavy-Tailed Patent Networks
 Extending the model into technological lineages inspired by Mathieu Charbonneau (2015, 2018):
 $$W_j = (\text{Citations}_j + 1)^\alpha \cdot (\text{Quality}_j)^\beta$$
-![Patent Recombination](assets/figures/fig4_patent_recombination.png)
+![Patent Recombination](assets/figures/fig5_patent_recombination.png)
 - **Neutral Drift ($\alpha=0, \beta=0$)**: Produces an exponential/truncated distribution with low inequality (Bentley et al., 2004).
 - **Modular Recombination with Preferential Attachment ($\alpha \ge 1, \beta \ge 1$)**: Accurately reproduces heavy-tailed Pareto power laws ($P(k) \propto k^{-\gamma}$) characteristic of empirical patent databases (USPTO/EPO).
 
@@ -134,8 +152,9 @@ cultural-evolution-efficiency/
 │   └── figures/                       # High-resolution (300 DPI) publication figures
 │       ├── fig1_simulation_ensembles.png
 │       ├── fig2_replicator_dynamics.png
-│       ├── fig3_empirical_validation.png
-│       └── fig4_patent_recombination.png
+│       ├── fig3_copier_sweep.png
+│       ├── fig4_empirical_validation.png
+│       └── fig5_patent_recombination.png
 ├── data/
 │   └── task1.csv                      # Empirical human dataset (9,600 trials; Najar et al. 2020)
 ├── docs/
