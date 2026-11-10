@@ -140,6 +140,13 @@ $$W_j = (\text{Citations}_j + 1)^\alpha \cdot (\text{Quality}_j)^\beta$$
 
 ---
 
+### Figure 6: The General Case — 2D Phase Diagrams (Harshness & Imitation Error)
+Proving that the copier tipping point is a continuous structural boundary across environmental harshness ($H_{\text{high}} \in [2, 14]$) and Henrich's Gumbel transmission loss ($\alpha_{\text{loss}} \in [0.2, 1.2]$):
+![General Case Phase Diagram](assets/figures/fig6_general_phase_diagram.png)
+- Dashed black contours mark the exact zero-payoff viability threshold ($\Pi = 0$), showing how higher austerity or higher imitation error steadily shrink the maximum tolerable proportion of copiers.
+
+---
+
 ## 📂 Repository Architecture
 
 ```
@@ -154,7 +161,8 @@ cultural-evolution-efficiency/
 │       ├── fig2_replicator_dynamics.png
 │       ├── fig3_copier_sweep.png
 │       ├── fig4_empirical_validation.png
-│       └── fig5_patent_recombination.png
+│       ├── fig5_patent_recombination.png
+│       └── fig6_general_phase_diagram.png
 ├── data/
 │   └── task1.csv                      # Empirical human dataset (9,600 trials; Najar et al. 2020)
 ├── docs/

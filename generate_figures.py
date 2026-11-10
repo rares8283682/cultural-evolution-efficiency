@@ -187,4 +187,44 @@ plt.savefig(fig5_path)
 plt.close()
 print(f"Saved: {fig5_path}")
 
+print("Generating Figure 6: General Case 2D Phase Diagrams...")
+phase_res = arena.run_general_case_phase_diagram(n_runs=20)
+copier_pcts_grid = np.array([int(round(p * 100)) for p in phase_res["copier_grid"]])
+harsh_grid = np.array(phase_res["harshness_grid"])
+loss_grid = np.array(phase_res["loss_grid"])
+mat_h = phase_res["payoff_vs_harshness"]
+mat_l = phase_res["payoff_vs_loss"]
+
+fig, axes = plt.subplots(1, 2, figsize=(15, 5.8))
+
+im1 = axes[0].imshow(mat_h, origin="lower", aspect="auto", cmap="RdYlGn",
+                     extent=[0, 100, harsh_grid[0], harsh_grid[-1]], vmin=-15, vmax=120)
+axes[0].contour(np.linspace(0, 100, len(copier_pcts_grid)), harsh_grid, mat_h,
+                levels=[0.0], colors="black", linewidths=2.2, linestyles="--")
+cbar1 = plt.colorbar(im1, ax=axes[0])
+cbar1.set_label("Post-Shock Net Payoff $\\Pi$", fontweight="bold")
+axes[0].axhline(10.0, color="navy", linestyle=":", lw=1.5, label="Baseline Shock ($H=10.0$)")
+axes[0].set_title("A. Phase Boundary: Copier Proportion vs. Harshness", fontweight="bold")
+axes[0].set_xlabel("Proportion of Copiers in Population (%)", fontweight="bold")
+axes[0].set_ylabel("Environmental Harshness Shock ($H_{\\text{high}}$)", fontweight="bold")
+axes[0].legend(loc="upper left", frameon=True)
+
+im2 = axes[1].imshow(mat_l, origin="lower", aspect="auto", cmap="RdYlGn",
+                     extent=[0, 100, loss_grid[0], loss_grid[-1]], vmin=-15, vmax=120)
+axes[1].contour(np.linspace(0, 100, len(copier_pcts_grid)), loss_grid, mat_l,
+                levels=[0.0], colors="black", linewidths=2.2, linestyles="--")
+cbar2 = plt.colorbar(im2, ax=axes[1])
+cbar2.set_label("Post-Shock Net Payoff $\\Pi$", fontweight="bold")
+axes[1].axhline(0.8, color="navy", linestyle=":", lw=1.5, label="Baseline Loss ($\\alpha_{\\text{loss}}=0.8$)")
+axes[1].set_title("B. Phase Boundary: Copier Proportion vs. Imitation Error", fontweight="bold")
+axes[1].set_xlabel("Proportion of Copiers in Population (%)", fontweight="bold")
+axes[1].set_ylabel("Gumbel Skill Loss ($\\alpha_{\\text{loss}}$)", fontweight="bold")
+axes[1].legend(loc="upper left", frameon=True)
+
+plt.tight_layout()
+fig6_path = os.path.join(FIG_DIR, "fig6_general_phase_diagram.png")
+plt.savefig(fig6_path)
+plt.close()
+print(f"Saved: {fig6_path}")
+
 print("All publication figures successfully generated!")

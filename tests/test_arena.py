@@ -61,3 +61,17 @@ def test_replicator_dynamics():
     # Check proportions sum to 1.0 within numerical precision
     sums = np.sum(rep["props_history"], axis=2)
     assert np.allclose(sums, 1.0, atol=1e-2)
+
+
+def test_general_case_phase_diagram():
+    arena = HarshnessCulturalArena(N=30, generations=15, shock_gen=8, seed=77)
+    res = arena.run_general_case_phase_diagram(
+        copier_grid=[0.0, 0.5, 1.0],
+        harshness_grid=[2.0, 10.0],
+        loss_grid=[0.4, 0.8],
+        n_runs=2,
+    )
+    assert res["payoff_vs_harshness"].shape == (2, 3)
+    assert res["payoff_vs_loss"].shape == (2, 3)
+    assert not np.any(np.isnan(res["payoff_vs_harshness"]))
+    assert not np.any(np.isnan(res["payoff_vs_loss"]))

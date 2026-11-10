@@ -2,7 +2,7 @@
 Harshness Cultural Arena: Agent-Based Simulation of Cumulative Cultural Evolution.
 """
 
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 import numpy as np
 import pandas as pd
 
@@ -302,6 +302,67 @@ class HarshnessCulturalArena:
             })
 
         return pd.DataFrame(records)
+
+    def run_general_case_phase_diagram(
+        self,
+        copier_grid: Optional[List[float]] = None,
+        harshness_grid: Optional[List[float]] = None,
+        loss_grid: Optional[List[float]] = None,
+        n_runs: int = 20,
+    ) -> Dict[str, Any]:
+        """
+        Compute general 2D phase boundaries across:
+        1) Copier proportion vs. Post-Shock Environmental Harshness (H_high)
+        2) Copier proportion vs. Henrich Gumbel Transmission Loss (gumbel_loss)
+        """
+        if copier_grid is None:
+            copier_grid = [0.0, 0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 1.00]
+        if harshness_grid is None:
+            harshness_grid = [2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0]
+        if loss_grid is None:
+            loss_grid = [0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
+
+        master_rng = np.random.default_rng(self.seed + 888)
+        run_seeds = master_rng.integers(100000, 999999, size=n_runs)
+
+        # Matrix 1: Harshness (rows) x Copier Proportion (cols)
+        orig_H_high = self.H_high
+        orig_loss = self.gumbel_loss
+
+        mat_harshness = np.zeros((len(harshness_grid), len(copier_grid)))
+        for i, h_val in enumerate(harshness_grid):
+            self.H_high = h_val
+            for j, p_copier in enumerate(copier_grid):
+                p_innov = 1.0 - p_copier
+                posts = []
+                for r_seed in run_seeds:
+                    r_rng = np.random.default_rng(r_seed)
+                    hist = self.simulate_single_run(3, r_rng, fixed_innov_prob=p_innov)
+                    posts.append(hist["mean_payoff"][-1])
+                mat_harshness[i, j] = float(np.mean(posts))
+        self.H_high = orig_H_high
+
+        # Matrix 2: Gumbel Loss (rows) x Copier Proportion (cols) at baseline H_high
+        mat_loss = np.zeros((len(loss_grid), len(copier_grid)))
+        for i, l_val in enumerate(loss_grid):
+            self.gumbel_loss = l_val
+            for j, p_copier in enumerate(copier_grid):
+                p_innov = 1.0 - p_copier
+                posts = []
+                for r_seed in run_seeds:
+                    r_rng = np.random.default_rng(r_seed)
+                    hist = self.simulate_single_run(3, r_rng, fixed_innov_prob=p_innov)
+                    posts.append(hist["mean_payoff"][-1])
+                mat_loss[i, j] = float(np.mean(posts))
+        self.gumbel_loss = orig_loss
+
+        return {
+            "copier_grid": copier_grid,
+            "harshness_grid": harshness_grid,
+            "loss_grid": loss_grid,
+            "payoff_vs_harshness": mat_harshness,
+            "payoff_vs_loss": mat_loss,
+        }
 
     def run_replicator_dynamics(
         self,
