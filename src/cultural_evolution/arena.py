@@ -466,3 +466,153 @@ class HarshnessCulturalArena:
             "payoff_history": payoff_history,
             "skill_history": skill_history,
         }
+
+    def run_corporate_time_machine(
+        self,
+        num_firms: int = 1000,
+        generations: int = 100,
+        shock_gen: int = 40,
+        scenarios: Optional[Dict[str, Dict[str, float]]] = None,
+        seed_offset: int = 777,
+    ) -> Dict[str, Any]:
+        """
+        Corporate R&D Time Machine: Macro-Technological Scenario Simulator.
+
+        Simulates an ensemble of corporate firms (default N=1,000) competing over
+        T historical/forecast epochs (quarters) under user-defined macroeconomic regimes
+        and R&D vs. copying portfolio strategies.
+
+        Parameters
+        ----------
+        num_firms : int, default=1000
+            Number of competing firms in the industry simulation.
+        generations : int, default=100
+            Total historical/forecast epochs (quarters).
+        shock_gen : int, default=40
+            Epoch where macroeconomic/regulatory shock occurs.
+        scenarios : dict, optional
+            Dictionary mapping scenario name to parameter dict:
+            {'copier_ratio': float, 'H_pre': float, 'H_post': float}
+        seed_offset : int, default=777
+            Random seed offset.
+
+        Returns
+        -------
+        dict with scenario results:
+            - 'scenarios': dict of scenario outputs (mean_valuation, survival_rate, etc.)
+            - 'generations': int
+            - 'shock_gen': int
+            - 'num_firms': int
+        """
+        if scenarios is None:
+            scenarios = {
+                "Fast-Follower Swarm (90% Copy / 10% R&D)": {
+                    "copier_ratio": 0.90,
+                    "H_pre": 2.0,
+                    "H_post": 10.0,
+                    "color": "#d62728",
+                },
+                "Optimal Division of Labor (70% Copy / 30% R&D)": {
+                    "copier_ratio": 0.70,
+                    "H_pre": 2.0,
+                    "H_post": 10.0,
+                    "color": "#2ca02c",
+                },
+                "Balanced Tech Firm (50% Copy / 50% R&D)": {
+                    "copier_ratio": 0.50,
+                    "H_pre": 2.0,
+                    "H_post": 10.0,
+                    "color": "#1f77b4",
+                },
+                "DeepTech Pioneer (10% Copy / 90% R&D)": {
+                    "copier_ratio": 0.10,
+                    "H_pre": 2.0,
+                    "H_post": 10.0,
+                    "color": "#9467bd",
+                },
+            }
+
+        results: Dict[str, Any] = {}
+        master_rng = np.random.default_rng(self.seed + seed_offset)
+
+        for s_idx, (scen_name, params) in enumerate(scenarios.items()):
+            p_copy = params.get("copier_ratio", 0.70)
+            h_pre = params.get("H_pre", self.H_low)
+            h_post = params.get("H_post", self.H_high)
+            color = params.get("color", "#333333")
+
+            rng = np.random.default_rng(master_rng.integers(100000, 999999))
+            z = np.full(num_firms, 2.0)
+            operating_margin = np.zeros((num_firms, generations))
+            valuation_history = np.zeros((num_firms, generations))
+            cumulative_profit = np.zeros((num_firms, generations))
+            survival_rate = np.zeros(generations)
+
+            for t in range(generations):
+                H_current = h_pre if t < shock_gen else h_post
+                is_innov = rng.random(num_firms) >= p_copy
+                is_copy = ~is_innov
+
+                z_next = np.copy(z)
+                costs = np.zeros(num_firms)
+
+                n_copy = np.sum(is_copy)
+                if n_copy > 0:
+                    costs[is_copy] = self.cost_copy
+                    z_shifted = z - np.min(z) + 1e-4
+                    weights = z_shifted**self.alpha_prestige
+                    denom = np.sum(weights)
+                    probs = weights / denom if denom > 0 else np.ones(num_firms) / num_firms
+                    models = rng.choice(num_firms, size=n_copy, p=probs, replace=True)
+                    gumbel_noise = rng.gumbel(
+                        loc=-self.gumbel_loss, scale=self.gumbel_beta, size=n_copy
+                    )
+                    z_next[is_copy] = np.maximum(0.0, z[models] + gumbel_noise)
+
+                n_innov = np.sum(is_innov)
+                if n_innov > 0:
+                    costs[is_innov] = self.cost_innov
+                    dz = rng.exponential(scale=self.innov_lambda, size=n_innov)
+                    z_next[is_innov] = z[is_innov] + dz
+
+                margins = z_next - H_current - costs
+                z = z_next
+
+                operating_margin[:, t] = margins
+                valuation_history[:, t] = z
+                if t == 0:
+                    cumulative_profit[:, t] = margins
+                else:
+                    cumulative_profit[:, t] = cumulative_profit[:, t - 1] + margins
+
+                # Solvent if net operating margin >= 0 (covers metabolic burn)
+                survival_rate[t] = float(np.mean(margins >= 0.0) * 100.0)
+
+            results[scen_name] = {
+                "copier_ratio": p_copy,
+                "color": color,
+                "H_pre": h_pre,
+                "H_post": h_post,
+                "mean_valuation": np.mean(valuation_history, axis=0),
+                "std_valuation": np.std(valuation_history, axis=0),
+                "ci_val_lower": np.percentile(valuation_history, 2.5, axis=0),
+                "ci_val_upper": np.percentile(valuation_history, 97.5, axis=0),
+                "mean_operating_margin": np.mean(operating_margin, axis=0),
+                "std_operating_margin": np.std(operating_margin, axis=0),
+                "ci_margin_lower": np.percentile(operating_margin, 2.5, axis=0),
+                "ci_margin_upper": np.percentile(operating_margin, 97.5, axis=0),
+                "survival_rate": survival_rate,
+                "cumulative_margin": np.mean(cumulative_profit, axis=0),
+                "pre_shock_margin": float(np.mean(operating_margin[:, shock_gen - 1])),
+                "post_shock_margin": float(np.mean(operating_margin[:, -1])),
+                "final_survival": float(survival_rate[-1]),
+                "sample_paths": valuation_history[:15, :],  # 15 representative firm paths
+            }
+
+        return {
+            "scenarios": results,
+            "generations": generations,
+            "shock_gen": shock_gen,
+            "num_firms": num_firms,
+        }
+

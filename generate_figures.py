@@ -227,4 +227,55 @@ plt.savefig(fig6_path)
 plt.close()
 print(f"Saved: {fig6_path}")
 
+print("Generating Figure 7: Corporate R&D Time Machine (1,000 Firms)...")
+tm_arena = HarshnessCulturalArena(N=1000, generations=100, shock_gen=40, seed=42)
+tm_res = tm_arena.run_corporate_time_machine(num_firms=1000, generations=100, shock_gen=40)
+
+fig, axes = plt.subplots(1, 3, figsize=(18, 5.2))
+gens = np.arange(1, 101)
+
+for scen_name, s_data in tm_res["scenarios"].items():
+    axes[0].plot(gens, s_data["survival_rate"], label=scen_name, color=s_data["color"], lw=2.4)
+axes[0].axvline(40, color="crimson", ls="--", lw=1.5, label="Macro Shock ($H=10.0$)")
+axes[0].set_title("A. Industry Solvency Rate (N=1,000 Firms)", fontweight="bold")
+axes[0].set_xlabel("Quarterly Epoch (t)", fontweight="bold")
+axes[0].set_ylabel("Solvent Firms (% Margin ≥ 0)", fontweight="bold")
+axes[0].set_ylim(-5, 105)
+axes[0].grid(True, ls=":", alpha=0.5)
+axes[0].legend(loc="lower left", frameon=True, fontsize=8.5)
+sns.despine(ax=axes[0])
+
+for scen_name, s_data in tm_res["scenarios"].items():
+    axes[1].plot(gens, s_data["mean_valuation"], label=scen_name, color=s_data["color"], lw=2.2)
+    axes[1].fill_between(gens, s_data["ci_val_lower"], s_data["ci_val_upper"], color=s_data["color"], alpha=0.15)
+axes[1].axvline(40, color="crimson", ls="--", lw=1.5)
+axes[1].set_title("B. Patent Portfolio Quality z(t) (95% CI)", fontweight="bold")
+axes[1].set_xlabel("Quarterly Epoch (t)", fontweight="bold")
+axes[1].set_ylabel("Technological Capital / Valuation", fontweight="bold")
+axes[1].grid(True, ls=":", alpha=0.5)
+sns.despine(ax=axes[1])
+
+for scen_name, s_data in tm_res["scenarios"].items():
+    axes[2].plot(gens, s_data["mean_operating_margin"], label=scen_name, color=s_data["color"], lw=2.2)
+axes[2].axhline(0, color="black", ls="-", lw=1.2, alpha=0.7)
+axes[2].axvline(40, color="crimson", ls="--", lw=1.5)
+axes[2].annotate("The 'Free-Rider Illusion'\n(90% Copy looks most profitable)", xy=(25, 90), xytext=(5, 115),
+                 arrowprops=dict(arrowstyle="->", color="#d62728", lw=1.5), fontweight="bold", color="#d62728", fontsize=8.5)
+axes[2].annotate("Insolvency Cliff (Π < 0)\n(90% Copy Collapses)", xy=(55, -6), xytext=(50, -45),
+                 arrowprops=dict(arrowstyle="->", color="#d62728", lw=1.5), fontweight="bold", color="#d62728", fontsize=8.5)
+axes[2].set_title("C. Net Operating Margin Across 100 Quarters", fontweight="bold")
+axes[2].set_xlabel("Quarterly Epoch (t)", fontweight="bold")
+axes[2].set_ylabel("Operating Margin / Net Cashflow", fontweight="bold")
+axes[2].set_ylim(-55, 185)
+axes[2].grid(True, ls=":", alpha=0.5)
+sns.despine(ax=axes[2])
+
+plt.suptitle("Corporate R&D Time Machine — 1,000-Firm Scenario Simulation Across Macroeconomic Regimes", fontsize=13.5, fontweight="bold", y=1.02)
+plt.tight_layout()
+fig7_path = os.path.join(FIG_DIR, "fig7_corporate_time_machine.png")
+plt.savefig(fig7_path)
+plt.close()
+print(f"Saved: {fig7_path}")
+
 print("All publication figures successfully generated!")
+

@@ -75,3 +75,16 @@ def test_general_case_phase_diagram():
     assert res["payoff_vs_loss"].shape == (2, 3)
     assert not np.any(np.isnan(res["payoff_vs_harshness"]))
     assert not np.any(np.isnan(res["payoff_vs_loss"]))
+
+
+def test_corporate_time_machine():
+    arena = HarshnessCulturalArena(N=30, generations=20, shock_gen=10, seed=123)
+    res = arena.run_corporate_time_machine(num_firms=100, generations=20, shock_gen=10)
+    assert "scenarios" in res
+    assert len(res["scenarios"]) == 4
+    for scen_name, s_data in res["scenarios"].items():
+        assert len(s_data["mean_valuation"]) == 20
+        assert len(s_data["survival_rate"]) == 20
+        assert 0.0 <= s_data["final_survival"] <= 100.0
+        assert not np.any(np.isnan(s_data["mean_valuation"]))
+
