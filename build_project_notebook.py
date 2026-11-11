@@ -38,39 +38,87 @@ nb.metadata = {
 cells = []
 
 # ==========================================
-# CELL 0: TITLE & EXECUTIVE SUMMARY
+# CELL 0: TITLE, ABSTRACT & MASTER PIPELINE
 # ==========================================
 cells.append(nbf.v4.new_markdown_cell(r"""# When Does Copying Stop Paying Off? Environmental Harshness, Least Effort, and the Critical Threshold of Cumulative Culture
 
 **Course**: Cultural Evolution (2025–2026)  
 **Instructor**: Prof. Alexey Koshevoy (PR[AI]RIE Fellow & Postdoctoral Researcher, ENS-PSL)  
 **Institution**: Master's in AI & Society (PSAI), PSL University / École Normale Supérieure  
-**Author**: Rares Olteanu  
+**Author**: Rareș Olteanu  
 
 ---
 
-## Executive Summary & Project Architecture
+## Abstract
 
-In cultural evolution, social learning is frequently framed as an effortless adaptive shortcut, yet **Rogers' Paradox (1988)** demonstrates a fundamental trap: when copying is cheap, imitators proliferate at the expense of individual innovators until cultural knowledge stagnates and population mean fitness drops back to that of solitary learners. Meanwhile, as **Henrich (2004)** formalized for technological evolution, imperfect imitation naturally degrades complex skills unless actively replenished by innovation.
+> In cultural and technological evolution, copying existing solutions is cheap, whereas inventing new ones is costly. While minimizing effort pushes actors toward imitation, copying alone creates no new knowledge—it only redistributes existing techniques that erode through transmission error (Henrich, 2004). Addressing Rogers' Paradox (1988) in the context of corporate R&D and patent evolution (Charbonneau, 2015), this project asks: **how much copying can a system afford before an environmental or market shock triggers technological collapse?** To answer this, we build a minimal agent-based model where agents either pay a high cost for R&D innovation or cheaply copy existing patents, varying the copier share from $0\%$ to $100\%$. While heavy copying ($80\text{--}90\%$) maximizes short-term efficiency in stable times (the *"Free-Rider Illusion"*), a sudden scarcity shock triggers collapse above a critical copier threshold ($p^* \approx 70\%$), demonstrating why technological and corporate R&D systems require a minimum innovator core ($\sim 30\%$) to survive crises.
 
-Following **Professor Alexey Koshevoy's** supervisory guidance (*"Start with the simplest thing first, reflect deeply on theory, think about a general case, and add complex extensions at the end"*), this notebook is structured into two clear parts:
+---
 
-* **Part I — The Core Minimal Model & General Case Analysis**:
-  1. **The Parsimonious Question**: *In a cultural species where copying others is cheap but imperfect, and inventing new solutions is costly, how much copying can a society sustain before an environmental scarcity shock triggers cultural collapse?*
-  2. **Real-World Economic Translation (Patents & Corporate R&D)**: Mapping cultural skill $z_i(t)$ to **corporate patent portfolio quality**, copying to **open standards / fast-follower licensing** ($C_{\text{copy}} = 1.0$), and individual innovation to **in-house frontier R&D** ($C_{\text{innov}} = 5.0$).
-  3. **The Principle of Least Effort as a Transmission Bias**: Operationalized through an energetic cost disparity ($C_{\text{copy}} = 1.0 < C_{\text{innov}} = 5.0$) coupled with **Henrich's (2004) Gumbel skill-loss dynamics** ($\alpha_{\text{loss}} = 0.8$).
-  4. **The Copier Proportion Sweep ($0\% \to 100\%$)**: Testing fixed mixtures across 50 Monte Carlo runs per step reveals an exact critical tipping point ($p^* \approx 70\%$) separating resilient division of labor from austerity collapse ($\Pi < 0$).
-  5. **The General Case (2D Phase Diagrams)**: Sweeping both environmental harshness ($H \in [2, 14]$) and imitation error ($\alpha_{\text{loss}} \in [0.2, 1.2]$) reveals the continuous phase boundary governing technological survival.
-  6. **Theoretical Reflection**: Engaging directly with Henrich (2004), Charbonneau (2015, 2018), Rogers (1988), and corporate R&D portfolio strategy.
+## Master Project Pipeline & Architecture
 
-* **Part II — Advanced Extensions ("Extras")**:
-  * **Extension 1 (Dynamic Self-Organization)**: Adaptive Social Brain (Rescorla-Wagner $\Delta$-rule) & 5-Strategy benchmark trajectories.
-  * **Extension 2 (Endogenous Co-Evolution)**: Discrete Replicator Dynamics converging to an asymmetric Evolutionarily Stable State (ESS).
-  * **Extension 3 (Interactive Sandbox)**: Live 60-FPS HTML5/Canvas parameter playground.
-  * **Extension 4 (Professor's Rank-Frequency Model)**: Yule-Simon process contrasting neutral drift, frequency independence, prestige, and conformist bias.
-  * **Extension 5 (Technological Recombination)**: Modular patent citation network generating heavy-tailed power laws (Charbonneau framework).
-  * **Extension 6 (Corporate R&D Time Machine)**: Macro-technological scenario simulator stress-testing an ensemble of **1,000 competing corporate firms** over 100 quarterly epochs across macroeconomic shocks.
-  * **Extension 7 (Empirical Benchmark)**: Trial-by-trial validation on $N = 2{,}544$ aligned human choices from Najar et al. (2020, *PLoS Biology*).
+Following **Professor Alexey Koshevoy's** supervisory guidance (*"Start with the simplest model first, reflect deeply on theory, think about a general case, and add complex extensions at the end"*), this notebook follows a four-stage pipeline divided into **Part I (Core Minimal Model)** and **Part II (Extensions & Applications)**:
+
+```mermaid
+flowchart TD
+    %% STAGE 1
+    subgraph Stage1["STAGE 1: Theoretical Spine & Dual Mapping (Culture ↔ Corporate R&D)"]
+        direction LR
+        S1A["Principle of Least Effort<br/>(Koshevoy et al., 2023)<br/>Copying patents is cheap (C=1)<br/>In-house R&D is costly (C=5)"]
+        S1B["Imperfect Imitation & Decay<br/>(Henrich, 2004)<br/>Copied tech erodes via<br/>asymmetric Gumbel loss (α=0.8)"]
+        S1C["Rogers' Paradox under Shock<br/>(Rogers, 1988)<br/>Benign Boom (H=2) vs.<br/>Market Scarcity Crisis (H=10)"]
+        S1A --- S1B --- S1C
+    end
+
+    Stage1 --> Stage2
+
+    %% STAGE 2
+    subgraph Stage2["STAGE 2: The Simplest Core Model (Part I — Main Body)"]
+        direction TB
+        S2A["1. Minimal Payoff Engine (N=100, T=100)<br/>Net Payoff Π_i(t) = Skill z_i(t) - Harshness H(t) - Cost C(a_i)"]
+        S2B["2. The 10% Bins Experiment (0% → 100% Copiers)<br/>50 Monte Carlo runs per bin to isolate the exact transition"]
+        S2C["3. Core Discovery (Fig 1 & Table 1)<br/>• Benign Era: 80–90% copying wins ('Free-Rider Illusion')<br/>• Crisis Era: >70% copying collapses (Π < 0); optimal balance at ~70/30"]
+        S2D["4. General Case Phase Diagram (Fig 2 & Fig 3)<br/>2D sweep across Harshness H ∈ [2, 14] and Obsolescence α ∈ [0.2, 1.2]<br/>proving the tipping point is a general structural law"]
+        S2A --> S2B --> S2C --> S2D
+    end
+
+    Stage2 --> Stage3
+
+    %% STAGE 3
+    subgraph Stage3["STAGE 3: Deep Theoretical Reflection (Part I — Main Body)"]
+        direction LR
+        S3A["Why Technological Models<br/>Beyond Henrich (2004)<br/>Are Needed"]
+        S3B["Ecological Resolution<br/>to Rogers' Paradox via<br/>Division of Labor"]
+        S3C["Why R&D Systems & AI<br/>Models Collapse When<br/>Copying Exceeds p*"]
+        S3A --- S3B --- S3C
+    end
+
+    Stage3 --> Stage4
+
+    %% STAGE 4
+    subgraph Stage4["STAGE 4: Focused R&D & Evolutionary Extensions (Part II — 'Extras at the End')"]
+        direction TB
+        E1["Extension 5.1 & 5.2: Dynamic Self-Organization (Adaptive Brain & Replicator ESS, Fig 4 & 5)<br/>How agents/firms autonomously discover the ~70/30 R&D balance via Q-learning (δ = Π - Q) and selection"]
+        E2["Extension 5.3: Interactive 60-FPS Browser Simulation Sandbox<br/>Live HTML5/Canvas parameter playground for real-time experimentation"]
+        E3["Extension 5.4 & 5.5: Patent Citation Power Laws (Yule-Simon & Charbonneau, Fig 6 & 7)<br/>Connecting microscopic R&D innovation to macroscopic rank-frequency patent citation distributions"]
+        E4["Extension 5.6: The Corporate R&D 'Time Machine' (1,000-Firm Simulator, Fig 8)<br/>Stress-testing 1,000 competing firms over 100 quarters: survival cones, valuations, and bankruptcy cliffs"]
+        E5["Extension 5.7: Empirical Behavioral Validation (Najar et al. 2020, Fig 9)<br/>Testing selective social filtering across N = 2,544 human reinforcement learning trials"]
+        E1 --> E2 --> E3 --> E4 --> E5
+    end
+```
+
+### Quick Navigation Guide
+* **Part I — Core Minimal Model & General Case Analysis (Sections 1–4)**:
+  * **Section 1**: Research Question, Corporate R&D / Patent Framing & Theoretical Motivation
+  * **Section 2**: Formal Specification of the Minimal Model ($\Pi_i = z_i - H - C$)
+  * **Section 3**: Core Results — The $0\% \to 100\%$ Copier Sweep (**Fig 1**), 2D General Case Phase Diagrams (**Fig 2**), & Gumbel Tail Analysis (**Fig 3**)
+  * **Section 4**: Deep Theoretical Reflection (Henrich 2004, Charbonneau 2015, Rogers 1988, Corporate Technical Debt & AI Collapse)
+* **Part II — Secondary Extensions & Real-World Applications ("Extras", Section 5)**:
+  * **Extensions 5.1–5.2**: Adaptive Social Brain ($\Delta$-rule) & Endogenous Replicator Dynamics (**Figs 4–5**)
+  * **Extension 5.3**: Interactive 60-FPS Parameter Sandbox
+  * **Extensions 5.4–5.5**: Yule-Simon Rank-Frequency & Charbonneau Modular Patent Citation Networks (**Figs 6–7**)
+  * **Extension 5.6**: Macro-Technological Scenario Simulator — **The Corporate R&D Time Machine** ($N=1{,}000$ firms, **Fig 8**)
+  * **Extension 5.7**: Empirical Validation on Human Social Learning Trials ($N=2{,}544$ pairs, **Fig 9**)
 """))
 
 # ==========================================
