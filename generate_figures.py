@@ -14,10 +14,158 @@ from src.cultural_evolution.recombination import RecombinantPatentModel
 from src.cultural_evolution.empirical import load_najar_dataset, evaluate_empirical_comparison
 from src.cultural_evolution.viz import set_publication_style
 
+from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
+
 FIG_DIR = os.path.join(os.path.dirname(__file__), "assets", "figures")
 os.makedirs(FIG_DIR, exist_ok=True)
 
 set_publication_style()
+
+print("Generating Figure 0: Master Project Pipeline Architecture...")
+fig, ax = plt.subplots(figsize=(16, 12.8), dpi=300)
+ax.set_xlim(0, 100)
+ax.set_ylim(0, 100)
+ax.axis("off")
+fig.patch.set_facecolor("#ffffff")
+
+
+def _draw_box(ax, x, y, w, h, title, body, bg_color, border_color, title_color="#111111", body_color="#222222", title_size=10.5, body_size=8.8, pad=0.5):
+    shadow = FancyBboxPatch(
+        (x + 0.35, y - 0.45), w, h,
+        boxstyle=f"round,pad={pad},rounding_size=1.4",
+        facecolor="#00000018", edgecolor="none", zorder=1
+    )
+    ax.add_patch(shadow)
+    box = FancyBboxPatch(
+        (x, y), w, h,
+        boxstyle=f"round,pad={pad},rounding_size=1.4",
+        facecolor=bg_color, edgecolor=border_color, linewidth=1.8, zorder=2
+    )
+    ax.add_patch(box)
+    if title and body:
+        ax.text(x + w / 2, y + h - 1.3, title, ha="center", va="top",
+                fontsize=title_size, fontweight="bold", color=title_color, zorder=3, family="DejaVu Sans")
+        ax.text(x + w / 2, y + h / 2 - 1.0, body, ha="center", va="center",
+                fontsize=body_size, color=body_color, zorder=3, family="DejaVu Sans", linespacing=1.35)
+    elif title:
+        ax.text(x + w / 2, y + h / 2, title, ha="center", va="center",
+                fontsize=title_size, fontweight="bold", color=title_color, zorder=3, family="DejaVu Sans")
+
+
+def _draw_stage_container(ax, x, y, w, h, stage_label, bg_color, border_color, header_bg):
+    container = FancyBboxPatch(
+        (x, y), w, h,
+        boxstyle="round,pad=0.5,rounding_size=2.0",
+        facecolor=bg_color, edgecolor=border_color, linewidth=2.2, zorder=0
+    )
+    ax.add_patch(container)
+    header = FancyBboxPatch(
+        (x + 1.2, y + h - 2.6), w - 2.4, 2.8,
+        boxstyle="round,pad=0.3,rounding_size=1.0",
+        facecolor=header_bg, edgecolor="none", zorder=1
+    )
+    ax.add_patch(header)
+    ax.text(x + w / 2, y + h - 1.2, stage_label, ha="center", va="center",
+            fontsize=11.5, fontweight="bold", color="#ffffff", zorder=2, family="DejaVu Sans")
+
+
+def _draw_arrow(ax, x1, y1, x2, y2, color="#34495e", lw=2.2, style="-|>"):
+    arrow = FancyArrowPatch(
+        (x1, y1), (x2, y2),
+        arrowstyle=style, mutation_scale=16,
+        linewidth=lw, color=color, zorder=4
+    )
+    ax.add_patch(arrow)
+
+
+ax.text(50, 98.2, "MASTER PROJECT PIPELINE: TECHNOLOGICAL EVOLUTION, LEAST EFFORT & CORPORATE R&D",
+        ha="center", va="center", fontsize=14, fontweight="bold", color="#1a252f", family="DejaVu Sans")
+ax.text(50, 95.8, "Two-Tier Architecture (Part I: Simplest Core Model  •  Part II: R&D Time Machine, Patent Networks & Adaptive Learning)",
+        ha="center", va="center", fontsize=10, style="italic", color="#555555", family="DejaVu Sans")
+
+_draw_stage_container(ax, 2, 77.5, 96, 16,
+                      "STAGE 1: THEORETICAL SPINE & DUAL MAPPING (CULTURAL EVOLUTION  ↔  CORPORATE R&D)",
+                      bg_color="#f4f8fb", border_color="#2b5c8f", header_bg="#2b5c8f")
+_draw_box(ax, 4.0, 79.0, 29.0, 9.8,
+          "1. Principle of Least Effort",
+          "Koshevoy et al. (2023)\n• Copying patents is cheap (C_copy = 1.0)\n• Frontier R&D is costly (C_innov = 5.0)\n• Cost ratio drives imitation bias",
+          bg_color="#ffffff", border_color="#3498db", title_color="#1f618d")
+_draw_box(ax, 35.5, 79.0, 29.0, 9.8,
+          "2. Imperfect Imitation & Decay",
+          "Henrich (2004) Gumbel Model\n• Copied tech erodes (α_loss = 0.8)\n• Technological obsolescence over time\n• Only 6.71% serendipitous gain tail",
+          bg_color="#ffffff", border_color="#3498db", title_color="#1f618d")
+_draw_box(ax, 67.0, 79.0, 29.0, 9.8,
+          "3. Rogers' Paradox under Shock",
+          "Rogers (1988) / Market Crisis\n• Benign Boom (H = 2.0, t < 40)\n• Scarcity / Market Shock (H = 10.0, t ≥ 40)\n• When does copying trigger collapse?",
+          bg_color="#ffffff", border_color="#3498db", title_color="#1f618d")
+_draw_arrow(ax, 50, 77.1, 50, 73.9, color="#2b5c8f", lw=2.8)
+
+_draw_stage_container(ax, 2, 48.5, 96, 25.0,
+                      "STAGE 2: THE SIMPLEST CORE MODEL & GENERAL CASE ANALYSIS (PART I — MAIN BODY)",
+                      bg_color="#f4fbf7", border_color="#1e8449", header_bg="#1e8449")
+_draw_box(ax, 4.0, 60.4, 44.0, 8.2,
+          "Step 2.1: Minimal Payoff & Transmission Engine",
+          "N = 100 Agents/Firms  |  T = 100 Generations/Quarters\nNet Payoff:  Π_i(t) = Skill z_i(t) - Harshness H(t) - Effort Cost C(a_i)\nInnovators add Exp(λ=1.5) discovery  |  Copiers sample via Prestige + Gumbel noise",
+          bg_color="#ffffff", border_color="#27ae60", title_color="#145a32")
+_draw_box(ax, 52.0, 60.4, 44.0, 8.2,
+          "Step 2.2: The 10% Bins Copier Sweep (0% → 100%)",
+          "50 Independent Monte Carlo Runs per 10% Copier Increment\nIsolates the exact proportion of copiers where cultural/R&D accumulation\nfails to cover survival living costs under environmental shock",
+          bg_color="#ffffff", border_color="#27ae60", title_color="#145a32")
+_draw_arrow(ax, 48.6, 64.5, 51.4, 64.5, color="#1e8449", lw=2.2)
+_draw_box(ax, 4.0, 49.8, 44.0, 7.6,
+          "Step 2.3: Core Discovery — Tipping Point p* ≈ 70% (Fig 1 & Table 1)",
+          "• Benign Era (H=2): 80–90% copying wins (+90.2, 'Free-Rider Illusion')\n• Crisis Era (H=10): >70% copying collapses (Π < 0); ~70/30 is optimal (+12,650)",
+          bg_color="#e8f8f5", border_color="#16a085", title_color="#0e6655")
+_draw_box(ax, 52.0, 49.8, 44.0, 7.6,
+          "Step 2.4: General Case 2D Phase Diagrams (Fig 2 & Fig 3)",
+          "Sweeping Harshness H ∈ [2, 14] × Obsolescence Loss α ∈ [0.2, 1.2]\nProves the collapse boundary is a general structural law, not parameter tuning",
+          bg_color="#e8f8f5", border_color="#16a085", title_color="#0e6655")
+_draw_arrow(ax, 26.0, 59.8, 26.0, 58.0, color="#1e8449", lw=2.2)
+_draw_arrow(ax, 74.0, 59.8, 74.0, 58.0, color="#1e8449", lw=2.2)
+_draw_arrow(ax, 50, 48.1, 50, 45.1, color="#1e8449", lw=2.8)
+
+_draw_stage_container(ax, 2, 31.2, 96, 13.5,
+                      "STAGE 3: DEEP THEORETICAL REFLECTION (PART I — SECTION 4)",
+                      bg_color="#fef9e7", border_color="#b7950b", header_bg="#b7950b")
+_draw_box(ax, 4.0, 32.7, 29.0, 7.2,
+          "Beyond Henrich (2004)",
+          "Strategy composition (p copiers)\ndrives skill loss even at fixed N",
+          bg_color="#ffffff", border_color="#d4ac0d", title_color="#7d6608")
+_draw_box(ax, 35.5, 32.7, 29.0, 7.2,
+          "Ecological Rogers Resolution",
+          "~70/30 cognitive division of labor\nmaximizes cumulative lifetime welfare",
+          bg_color="#ffffff", border_color="#d4ac0d", title_color="#7d6608")
+_draw_box(ax, 67.0, 32.7, 29.0, 7.2,
+          "R&D Debt & AI Model Collapse",
+          "Why cutting R&D (<30%) or training AI\non synthetic copies causes collapse",
+          bg_color="#ffffff", border_color="#d4ac0d", title_color="#7d6608")
+_draw_arrow(ax, 50, 30.8, 50, 27.6, color="#b7950b", lw=2.8)
+
+_draw_stage_container(ax, 2, 1.8, 96, 25.4,
+                      "STAGE 4: SECONDARY EXTENSIONS & REAL-WORLD APPLICATIONS (PART II — 'EXTRAS AT THE END')",
+                      bg_color="#f5eef8", border_color="#7d3c98", header_bg="#7d3c98")
+_draw_box(ax, 4.0, 14.2, 44.0, 8.0,
+          "Ext 5.1 & 5.2: Adaptive Brain & Replicator ESS (Figs 4–5)",
+          "• Rescorla-Wagner Q-learning (δ = Π - Q) + Softmax exploration\n• Negative prediction errors after shock trigger autonomous R&D surge\n• Replicator dynamics converge endogenously to the ~65–70% copier ESS",
+          bg_color="#ffffff", border_color="#8e44ad", title_color="#5b2c6f")
+_draw_box(ax, 52.0, 14.2, 44.0, 8.0,
+          "Ext 5.4 & 5.5: Patent Citation Power Laws (Figs 6–7)",
+          "• Yule-Simon rank-frequency model (drift vs. prestige vs. conformity)\n• Mathieu Charbonneau (2015) modular patent recombination network\n• Reproduces empirical Pareto heavy-tailed patent citation distributions",
+          bg_color="#ffffff", border_color="#8e44ad", title_color="#5b2c6f")
+_draw_box(ax, 4.0, 3.4, 44.0, 8.4,
+          "Ext 5.6: Corporate R&D 'Time Machine' — 1,000 Firms (Fig 8)",
+          "• Stress-tests N = 1,000 competing firms over 100 quarterly epochs\n• Fast-Followers (90% copy) hit 0.0% solvency after macro shock\n• Balanced R&D firms (70% copy / 30% R&D) achieve 100% survival",
+          bg_color="#f4ecf7", border_color="#6c3483", title_color="#4a235a")
+_draw_box(ax, 52.0, 3.4, 44.0, 8.4,
+          "Ext 5.3 & 5.7: Live 60-FPS Sandbox & Human Data (Fig 9)",
+          "• Interactive HTML5/Canvas parameter playground inside notebook\n• Empirical validation on N = 2,544 human social learning trial pairs\n  (Najar et al. 2020, PLoS Biology): selective copying (79.3% vs 26.8%)",
+          bg_color="#f4ecf7", border_color="#6c3483", title_color="#4a235a")
+
+plt.tight_layout()
+fig0_path = os.path.join(FIG_DIR, "fig0_project_pipeline.png")
+plt.savefig(fig0_path, dpi=300, bbox_inches="tight", facecolor="#ffffff")
+plt.close()
+print(f"Saved: {fig0_path}")
 
 print("Generating Figure 1: 50-Run Simulation Ensembles...")
 arena = HarshnessCulturalArena(N=100, generations=100, shock_gen=40, seed=101101)

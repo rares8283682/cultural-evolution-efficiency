@@ -59,53 +59,8 @@ cells.append(nbf.v4.new_markdown_cell(r"""# When Does Copying Stop Paying Off? E
 
 Following **Professor Alexey Koshevoy's** supervisory guidance (*"Start with the simplest model first, reflect deeply on theory, think about a general case, and add complex extensions at the end"*), this notebook follows a four-stage pipeline divided into **Part I (Core Minimal Model)** and **Part II (Extensions & Applications)**:
 
-```mermaid
-flowchart TD
-    %% STAGE 1
-    subgraph Stage1["STAGE 1: Theoretical Spine & Dual Mapping (Culture ↔ Corporate R&D)"]
-        direction LR
-        S1A["Principle of Least Effort<br/>(Koshevoy et al., 2023)<br/>Copying patents is cheap (C=1)<br/>In-house R&D is costly (C=5)"]
-        S1B["Imperfect Imitation & Decay<br/>(Henrich, 2004)<br/>Copied tech erodes via<br/>asymmetric Gumbel loss (α=0.8)"]
-        S1C["Rogers' Paradox under Shock<br/>(Rogers, 1988)<br/>Benign Boom (H=2) vs.<br/>Market Scarcity Crisis (H=10)"]
-        S1A --- S1B --- S1C
-    end
+![Master Project Pipeline](assets/figures/fig0_project_pipeline.png)
 
-    Stage1 --> Stage2
-
-    %% STAGE 2
-    subgraph Stage2["STAGE 2: The Simplest Core Model (Part I — Main Body)"]
-        direction TB
-        S2A["1. Minimal Payoff Engine (N=100, T=100)<br/>Net Payoff Π_i(t) = Skill z_i(t) - Harshness H(t) - Cost C(a_i)"]
-        S2B["2. The 10% Bins Experiment (0% → 100% Copiers)<br/>50 Monte Carlo runs per bin to isolate the exact transition"]
-        S2C["3. Core Discovery (Fig 1 & Table 1)<br/>• Benign Era: 80–90% copying wins ('Free-Rider Illusion')<br/>• Crisis Era: >70% copying collapses (Π < 0); optimal balance at ~70/30"]
-        S2D["4. General Case Phase Diagram (Fig 2 & Fig 3)<br/>2D sweep across Harshness H ∈ [2, 14] and Obsolescence α ∈ [0.2, 1.2]<br/>proving the tipping point is a general structural law"]
-        S2A --> S2B --> S2C --> S2D
-    end
-
-    Stage2 --> Stage3
-
-    %% STAGE 3
-    subgraph Stage3["STAGE 3: Deep Theoretical Reflection (Part I — Main Body)"]
-        direction LR
-        S3A["Why Technological Models<br/>Beyond Henrich (2004)<br/>Are Needed"]
-        S3B["Ecological Resolution<br/>to Rogers' Paradox via<br/>Division of Labor"]
-        S3C["Why R&D Systems & AI<br/>Models Collapse When<br/>Copying Exceeds p*"]
-        S3A --- S3B --- S3C
-    end
-
-    Stage3 --> Stage4
-
-    %% STAGE 4
-    subgraph Stage4["STAGE 4: Focused R&D & Evolutionary Extensions (Part II — 'Extras at the End')"]
-        direction TB
-        E1["Extension 5.1 & 5.2: Dynamic Self-Organization (Adaptive Brain & Replicator ESS, Fig 4 & 5)<br/>How agents/firms autonomously discover the ~70/30 R&D balance via Q-learning (δ = Π - Q) and selection"]
-        E2["Extension 5.3: Interactive 60-FPS Browser Simulation Sandbox<br/>Live HTML5/Canvas parameter playground for real-time experimentation"]
-        E3["Extension 5.4 & 5.5: Patent Citation Power Laws (Yule-Simon & Charbonneau, Fig 6 & 7)<br/>Connecting microscopic R&D innovation to macroscopic rank-frequency patent citation distributions"]
-        E4["Extension 5.6: The Corporate R&D 'Time Machine' (1,000-Firm Simulator, Fig 8)<br/>Stress-testing 1,000 competing firms over 100 quarters: survival cones, valuations, and bankruptcy cliffs"]
-        E5["Extension 5.7: Empirical Behavioral Validation (Najar et al. 2020, Fig 9)<br/>Testing selective social filtering across N = 2,544 human reinforcement learning trials"]
-        E1 --> E2 --> E3 --> E4 --> E5
-    end
-```
 
 ### Quick Navigation Guide
 * **Part I — Core Minimal Model & General Case Analysis (Sections 1–4)**:
