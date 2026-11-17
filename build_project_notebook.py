@@ -50,7 +50,7 @@ cells.append(nbf.v4.new_markdown_cell(r"""# When Does Copying Stop Paying Off? E
 
 ## Abstract
 
-> In cultural and technological evolution, copying existing solutions is cheap, whereas inventing new ones is costly. Minimizing effort pushes individuals toward imitation, yet copying alone creates no new knowledge—it only redistributes existing techniques that erode through transmission error (Henrich, 2004). Addressing Rogers' Paradox (1988) in the context of corporate R&D and patent evolution (Charbonneau, 2015), this project asks: **how much copying can a system afford before an environmental or market shock triggers collapse?** To answer this, I build a minimal agent-based model where agents either pay a high cost for R&D innovation or cheaply copy existing patents, varying the copier share from $0\%$ to $100\%$. While heavy copying ($80\text{--}90\%$) gives the highest short-term payoff in stable times (the *"Free-Rider Illusion"*), a sudden shock triggers collapse above a critical copier threshold ($p^* \approx 70\%$), showing why technological and R&D systems need a minimum innovator core ($\sim 30\%$) to survive crises.
+> In cultural and technological evolution, copying existing solutions is cheap, whereas inventing new ones is costly. Minimizing effort pushes individuals toward imitation, yet copying alone creates no new knowledge: it only redistributes existing techniques that erode through transmission error (Henrich, 2004). Addressing Rogers' Paradox (1988) in the context of corporate R&D and patent evolution (Charbonneau, 2015), this project asks: **how much copying can a system afford before an environmental or market shock triggers collapse?** To answer this, I build a minimal agent-based model where agents either pay a high cost for R&D innovation or cheaply copy existing patents, varying the copier share from $0\%$ to $100\%$. While heavy copying ($80\text{--}90\%$) gives the highest short-term payoff in stable times (the *"Free-Rider Illusion"*), a sudden shock triggers collapse above a critical copier threshold ($p^* \approx 70\%$), showing why technological and R&D systems need a minimum innovator core ($\sim 30\%$) to survive crises.
 
 ---
 
@@ -61,12 +61,12 @@ Following **Professor Alexey Koshevoy's** advice (*"Start with the simplest mode
 ![Project Pipeline](assets/figures/fig0_project_pipeline.png)
 
 ### Contents
-* **Part I — Core Model & General Case (Sections 1–4)**:
+* **Part I: Core Model & General Case (Sections 1–4)**:
   * **Section 1**: Research Question & Corporate R&D / Patent Framing
   * **Section 2**: Model Rules & Simulation Setup ($\Pi_i = z_i - H - C$)
-  * **Section 3**: Results — $0\% \to 100\%$ Copier Sweep (**Fig 1**), 2D Phase Diagrams (**Fig 2**), & Gumbel Error Distribution (**Fig 3**)
+  * **Section 3**: Results: $0\% \to 100\%$ Copier Sweep (**Fig 1**), 2D Phase Diagrams (**Fig 2**), & Gumbel Error Distribution (**Fig 3**)
   * **Section 4**: Theoretical Discussion (Henrich 2004, Charbonneau 2015, Rogers 1988, Corporate R&D & AI Collapse)
-* **Part II — Extensions ("Extras", Section 5)**:
+* **Part II: Extensions ("Extras", Section 5)**:
   * **Extensions 5.1–5.2**: Adaptive Learning ($\Delta$-rule) & Replicator Dynamics (**Figs 4–5**)
   * **Extension 5.3**: Interactive Browser Simulation
   * **Extensions 5.4–5.5**: Yule-Simon Rank-Frequency & Charbonneau Patent Citations (**Figs 6–7**)
@@ -101,7 +101,7 @@ As discussed in class with **Professor Alexey Koshevoy**, the same trade-off app
 * **Market Shock** ($H = 2.0 \to 10.0$): When borrowing costs rise or competition tightens, firms relying on $>70\%$ copying cannot cover their operating costs ($\Pi < 0$).
 
 ### 1.3 Why Start with a Minimal Model?
-As **Charbonneau (2015, 2018)** points out, formal models of **technological evolution** are still relatively rare—outside of **Henrich's (2004)** model, there are few simple baselines connecting learning costs, imitation error, and environmental pressure. Testing fixed mixtures ($p \in \{0\%, 10\%, \dots, 100\%\}$ copiers) keeps the rules simple and makes it easy to see where the tipping point occurs.
+As **Charbonneau (2015, 2018)** points out, formal models of **technological evolution** are still relatively rare; outside of **Henrich's (2004)** model, there are few simple baselines connecting learning costs, imitation error, and environmental pressure. Testing fixed mixtures ($p \in \{0\%, 10\%, \dots, 100\%\}$ copiers) keeps the rules simple and makes it easy to see where the tipping point occurs.
 """))
 
 # ==============================================================================
@@ -127,7 +127,7 @@ $$\Pi_i(t) = \underbrace{z_i(t)}_{\text{Cultural Skill}} - \underbrace{H(t)}_{\t
 
 * **Environmental Harshness ($H(t)$)**:
   $$H(t) = \begin{cases} H_{\text{low}} = 2.0, & t < 40 \quad (\text{Benign Boom Era}) \\ H_{\text{high}} = 10.0, & t \ge 40 \quad (\text{Austerity / Scarcity Shock}) \end{cases}$$
-* **Effort Cost ($C$) — The Principle of Least Effort**:
+* **Effort Cost ($C$) (Principle of Least Effort)**:
   $$C(\text{COPY}) = 1.0, \qquad C(\text{INNOVATE}) = 5.0$$
   Copying requires 5 times less effort than innovating, acting as an intrinsic energetic transmission bias.
 
@@ -250,7 +250,7 @@ cells.append(nbf.v4.new_code_cell(r"""def run_one_sim(p_copy, rng, n_agents=N_AG
 # PART I - SECTION 3: CORE RESULTS (COPIER SWEEP & GENERAL CASE)
 # ==============================================================================
 cells.append(nbf.v4.new_markdown_cell(r"""---
-## Section 3: Core Results — The Copier Proportion Sweep & General Case Analysis
+## Section 3: Core Results (Copier Proportion Sweep & General Case)
 
 ### 3.1 Running the 10% Copier Bins Experiment ($0\%$ to $100\%$)
 Following Prof. Koshevoy's suggestion, I test fixed population mixtures in 10% steps from `0%` to `100%` copiers, running 50 independent Monte Carlo simulations per mixture. First, I compute the pre-shock payoff ($t=39$), post-shock payoff ($t=99$), and cumulative lifetime welfare for each bin and display them in a summary table.
@@ -426,7 +426,7 @@ axes[1].set_xlabel("Proportion of Copiers (%)", fontweight="bold")
 axes[1].set_ylabel("Gumbel Skill Loss (α_loss)", fontweight="bold")
 axes[1].legend(loc="upper left", frameon=True)
 
-plt.suptitle("Publication Figure 2: The General Case — Continuous Survival Boundaries",
+plt.suptitle("Publication Figure 2: The General Case (Continuous Survival Boundaries)",
              fontsize=13.5, fontweight="bold", y=1.02)
 plt.tight_layout()
 plt.show()
@@ -472,7 +472,7 @@ cells.append(nbf.v4.new_markdown_cell(r"""---
 Following Prof. Koshevoy's advice to focus on the theoretical meaning rather than technical complexity, the core results point to four main conclusions:
 
 ### 4.1 Technological Evolution Beyond Population Size (Henrich 2004 & Charbonneau 2015)
-Outside of **Henrich's (2004)** classic demographic model—which showed how drops in population size cause skill loss—mathematical models of technological evolution are still relatively rare (**Charbonneau, 2015, 2018**). Henrich focused on *population size* ($N$) as the main driver of cultural loss. Here, I keep $N$ fixed and vary **learning strategy composition ($p$ copiers vs. $1-p$ innovators)** under changing environmental pressure ($H$). Even when population size stays constant, having too many copiers produces the same downward spiral.
+Outside of **Henrich's (2004)** classic demographic model (which showed how drops in population size cause skill loss), mathematical models of technological evolution are still relatively rare (**Charbonneau, 2015, 2018**). Henrich focused on *population size* ($N$) as the main driver of cultural loss. Here, I keep $N$ fixed and vary **learning strategy composition ($p$ copiers vs. $1-p$ innovators)** under changing environmental pressure ($H$). Even when population size stays constant, having too many copiers produces the same downward spiral.
 
 ### 4.2 The "Free-Rider Illusion" & Least Effort as a Transmission Bias
 Why do groups end up close to collapse? The sweep highlights a simple trap:
@@ -480,7 +480,7 @@ Why do groups end up close to collapse? The sweep highlights a simple trap:
 * However, those short-term gains hide a long-term weakness. Because copying alone adds no new inventions, average skill slowly erodes under Henrich's Gumbel noise ($\alpha_{\text{loss}} = 0.8$). When conditions harden ($H = 10.0$), populations above $p^* \approx 70\%$ do not invent fast enough to cover living costs, and mean payoff drops below zero ($\Pi < 0$).
 
 ### 4.3 Resolving Rogers' Paradox via Ecological Thresholds
-Alan Rogers (1988) showed that social learning gives zero net fitness gain at equilibrium because imitators dilute the benefit of innovation. Later solutions—like Enquist et al.'s (2007) *Critical Social Learning*—relied on more complex individual decision rules. My phase diagram suggests a simpler ecological answer:
+Alan Rogers (1988) showed that social learning gives zero net fitness gain at equilibrium because imitators dilute the benefit of innovation. Later solutions (like Enquist et al.'s (2007) *Critical Social Learning*) relied on more complex individual decision rules. My phase diagram suggests a simpler ecological answer:
 * Long-term welfare does **not** require $100\%$ innovators (which wastes energy on constant rediscovery), nor does it fail everywhere.
 * Instead, cumulative welfare peaks at an intermediate **division of labor** ($\sim 70\%$ copiers using the discoveries of $\sim 30\%$ innovators), with the exact survival boundary shifting smoothly as harshness $H$ or imitation error $\alpha_{\text{loss}}$ increases (Figure 2).
 
@@ -1013,7 +1013,7 @@ axes[2].grid(True, ls=":", alpha=0.5)
 for ax in axes:
     sns.despine(ax=ax)
 
-plt.suptitle("Publication Figure 8: Corporate R&D Time Machine — 1,000-Firm Scenario Simulation", fontsize=13.5, fontweight="bold", y=1.02)
+plt.suptitle("Publication Figure 8: Corporate R&D Scenario Simulator (1,000 Firms)", fontsize=13.5, fontweight="bold", y=1.02)
 plt.tight_layout()
 plt.show()
 """))
