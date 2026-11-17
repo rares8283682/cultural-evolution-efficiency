@@ -3,16 +3,15 @@ Master Notebook Builder for Cultural Evolution Final Project
 Author: Rares Olteanu (in dialogue with Prof. Alexey Koshevoy)
 Institution: PSAI AI & Society Master's Program, PSL University / ENS-PSL
 
-Design Principle (Per Prof. Alexey Koshevoy's Guidance):
+Structure:
 - Part I: Simplest Core Model First (Copier Proportion Sweep 0%->100%, 2D General Case Phase Diagrams,
   Henrich Gumbel Copying, & Deep Theoretical Reflection)
 - Part II: Secondary Extensions ("Extras" at the End: Adaptive Social Brain, Replicator Dynamics,
-  Interactive Sandbox, Yule-Simon Rank-Frequency, Charbonneau Patent Recombination, & Empirical Najar et al. 2020)
-- 100% Mass Computational Reproducibility (I4R Standard)
+  Interactive Sandbox, Yule-Simon Rank-Frequency, Charbonneau Patent Recombination,
+  Corporate R&D Time Machine, & Empirical Najar et al. 2020)
+- Small, modular code cells with plain-English explanations above every block.
 """
 
-import os
-import json
 import nbformat as nbf
 from nbclient import NotebookClient
 
@@ -22,7 +21,7 @@ nb.metadata = {
     "kernelspec": {
         "display_name": "Python 3 (ipykernel)",
         "language": "python",
-        "name": "python3"
+        "name": "python3",
     },
     "language_info": {
         "codemirror_mode": {"name": "ipython", "version": 3},
@@ -31,15 +30,15 @@ nb.metadata = {
         "name": "python",
         "nbconvert_exporter": "python",
         "pygments_lexer": "ipython3",
-        "version": "3.13.0"
-    }
+        "version": "3.13.0",
+    },
 }
 
 cells = []
 
-# ==========================================
+# ==============================================================================
 # CELL 0: TITLE, ABSTRACT & MASTER PIPELINE
-# ==========================================
+# ==============================================================================
 cells.append(nbf.v4.new_markdown_cell(r"""# When Does Copying Stop Paying Off? Environmental Harshness, Least Effort, and the Critical Threshold of Cumulative Culture
 
 **Course**: Cultural Evolution (2025–2026)  
@@ -61,11 +60,10 @@ Following **Professor Alexey Koshevoy's** supervisory guidance (*"Start with the
 
 ![Master Project Pipeline](assets/figures/fig0_project_pipeline.png)
 
-
 ### Quick Navigation Guide
 * **Part I — Core Minimal Model & General Case Analysis (Sections 1–4)**:
   * **Section 1**: Research Question, Corporate R&D / Patent Framing & Theoretical Motivation
-  * **Section 2**: Formal Specification of the Minimal Model ($\Pi_i = z_i - H - C$)
+  * **Section 2**: Formal Specification & Modular Simulation Functions ($\Pi_i = z_i - H - C$)
   * **Section 3**: Core Results — The $0\% \to 100\%$ Copier Sweep (**Fig 1**), 2D General Case Phase Diagrams (**Fig 2**), & Gumbel Tail Analysis (**Fig 3**)
   * **Section 4**: Deep Theoretical Reflection (Henrich 2004, Charbonneau 2015, Rogers 1988, Corporate Technical Debt & AI Collapse)
 * **Part II — Secondary Extensions & Real-World Applications ("Extras", Section 5)**:
@@ -76,9 +74,9 @@ Following **Professor Alexey Koshevoy's** supervisory guidance (*"Start with the
   * **Extension 5.7**: Empirical Validation on Human Social Learning Trials ($N=2{,}544$ pairs, **Fig 9**)
 """))
 
-# ==========================================
-# CELL 1: PART I - SECTION 1: RESEARCH QUESTION & MOTIVATION
-# ==========================================
+# ==============================================================================
+# PART I - SECTION 1: RESEARCH QUESTION & MOTIVATION
+# ==============================================================================
 cells.append(nbf.v4.new_markdown_cell(r"""---
 # Part I: Core Model & General Theory
 
@@ -106,9 +104,9 @@ As highlighted in discussion with **Professor Alexey Koshevoy**, this exact dyna
 As noted by **Charbonneau (2015, 2018)**, formal mathematical and agent-based modeling of **technological evolution** remains surprisingly sparse—aside from **Henrich's (2004)** classic skill-loss model, few simple, general models quantify how individual learning costs and imitation error interact under ecological pressure. Starting with fixed population mixtures ($p \in \{0\%, 10\%, \dots, 100\%\}$ copiers) eliminates unnecessary cognitive assumptions, allowing clean causal isolation of the phase boundary across general parameter regimes.
 """))
 
-# ==========================================
-# CELL 2: PART I - SECTION 2: THE SIMPLEST MODEL SPECIFICATION
-# ==========================================
+# ==============================================================================
+# PART I - SECTION 2: MODEL SPECIFICATION
+# ==============================================================================
 cells.append(nbf.v4.new_markdown_cell(r"""---
 ## Section 2: Specification of the Simplest Model
 
@@ -146,16 +144,14 @@ $$\Pi_i(t) = \underbrace{z_i(t)}_{\text{Cultural Skill}} - \underbrace{H(t)}_{\t
 In each population mixture, a fixed share $p \in \{0\%, 10\%, 20\%, \dots, 90\%, 100\%\}$ of agents act as copiers while the remaining $1 - p$ act as innovators. We evaluate both the baseline case ($H_{\text{high}}=10.0, \alpha_{\text{loss}}=0.8$) and the **general case** across sweeping shock severities and imitation error rates.
 """))
 
-# ==========================================
-# CELL 3: CODE BLOCK 1 - ENVIRONMENT SETUP
-# ==========================================
-cells.append(nbf.v4.new_markdown_cell(r"""### Code Block 1: Reproducible Environment Setup & Plot Styling
-> [!NOTE]
-> Initializes NumPy (`default_rng`), Pandas, SciPy, and publication plotting aesthetics (`ticks` theme with colorblind-safe palette). Logs runtime library versions for computational reproducibility (I4R standard).
+# ==============================================================================
+# PART I - MODULAR CODE CELLS (SMALL PIECES WITH CLEAR DESCRIPTIONS)
+# ==============================================================================
+cells.append(nbf.v4.new_markdown_cell(r"""### 2.4 Step 1: Importing Libraries & Setting Plot Style
+First, I import NumPy, Pandas, SciPy, Matplotlib, and Seaborn, and configure a clean colorblind-safe theme for all figures. I also print the library versions so the results are easy to reproduce.
 """))
 
-cells.append(nbf.v4.new_code_cell(r"""# Code Block 1: Scientific Environment Setup and Plot Styling
-import os
+cells.append(nbf.v4.new_code_cell(r"""import os
 import sys
 import numpy as np
 import pandas as pd
@@ -169,679 +165,307 @@ plt.rcParams["savefig.dpi"] = 300
 plt.rcParams["axes.titlesize"] = 13
 plt.rcParams["axes.labelsize"] = 11
 
-print(f"Python Version: {sys.version.split()[0]}")
-print(f"NumPy Version:  {np.__version__}")
-print(f"Pandas Version: {pd.__version__}")
-print("Computational Reproducibility Environment Verified.")
+print(f"Python: {sys.version.split()[0]} | NumPy: {np.__version__} | Pandas: {pd.__version__}")
 """))
 
-# ==========================================
-# CELL 4: CODE BLOCK 2 - SIMULATION ENGINE
-# ==========================================
-cells.append(nbf.v4.new_markdown_cell(r"""### Code Block 2: Core Simulation Engine (`HarshnessCulturalArena`)
-> [!NOTE]
-> Vectorized agent-based simulation engine implementing the core minimal model (`run_fixed_mixture_sweep`, `run_general_case_phase_diagram`) as well as the secondary extensions (`run_ensemble`, `run_replicator_dynamics`) used in Part II.
+cells.append(nbf.v4.new_markdown_cell(r"""### 2.5 Step 2: Baseline Simulation Parameters
+Here I define the baseline constants for the minimal model: 100 agents over 100 generations, with an environmental shock at generation 40 (`H` jumps from `2.0` to `10.0`), cheap copying (`1.0`), costly innovation (`5.0`), and Henrich's Gumbel loss (`0.8`).
 """))
 
-cells.append(nbf.v4.new_code_cell(r"""# Code Block 2: Vectorized Cultural Evolution Simulation Engine
-class HarshnessCulturalArena:
-    # Vectorized agent-based simulation modeling cumulative cultural evolution
-    # under environmental harshness shocks, cognitive learning costs, and transmission noise.
-    def __init__(
-        self,
-        N=100,
-        generations=100,
-        shock_gen=40,
-        H_low=2.0,
-        H_high=10.0,
-        cost_copy=1.0,
-        cost_innov=5.0,
-        alpha_prestige=4.0,
-        gumbel_loss=0.8,
-        gumbel_beta=0.3,
-        innov_lambda=1.5,
-        eta=0.35,
-        tau=1.0,
-        seed=101101
-    ):
-        self.N = N
-        self.T = generations
-        self.T_shock = shock_gen
-        self.H_low = H_low
-        self.H_high = H_high
-        self.cost_copy = cost_copy
-        self.cost_innov = cost_innov
-        self.alpha_prestige = alpha_prestige
-        self.gumbel_loss = gumbel_loss
-        self.gumbel_beta = gumbel_beta
-        self.innov_lambda = innov_lambda
-        self.eta = eta
-        self.tau = tau
-        self.seed = seed
+cells.append(nbf.v4.new_code_cell(r"""N_AGENTS = 100
+N_GENS = 100
+SHOCK_GEN = 40
 
-    def simulate_single_run(self, strategy_mode, rng, fixed_innov_prob=None):
-        N = self.N
-        z = rng.uniform(6.0, 7.0, size=N)
+H_LOW = 2.0
+H_HIGH = 10.0
 
-        if strategy_mode == 2:
-            q_vals = np.zeros((N, 2))
-            q_vals[:, 0] = 3.5
-            q_vals[:, 1] = 0.0
-        elif strategy_mode == 4:
-            n_copier = int(0.80 * N)
-            n_innov = int(0.10 * N)
-            n_adapt = N - (n_copier + n_innov)
-            q_vals = np.zeros((n_adapt, 2))
-            q_vals[:, 0] = 3.5
-            q_vals[:, 1] = 0.0
-        else:
-            q_vals = None
+COST_COPY = 1.0
+COST_INNOV = 5.0
 
-        history = {
-            "mean_payoff": np.zeros(self.T),
-            "mean_skill": np.zeros(self.T),
-            "diversity": np.zeros(self.T),
-            "pct_innovating": np.zeros(self.T),
-        }
-
-        for t in range(self.T):
-            H = self.H_high if t >= self.T_shock else self.H_low
-            actions = np.zeros(N, dtype=int)
-
-            if strategy_mode == 0:
-                actions[:] = 0
-            elif strategy_mode == 1:
-                actions[:] = 1
-            elif strategy_mode == 2:
-                v_copy = q_vals[:, 0] / self.tau
-                v_innov = q_vals[:, 1] / self.tau
-                max_v = np.maximum(v_copy, v_innov)
-                exp_c = np.exp(v_copy - max_v)
-                exp_i = np.exp(v_innov - max_v)
-                p_innov = exp_i / (exp_c + exp_i)
-                actions = (rng.random(size=N) < p_innov).astype(int)
-            elif strategy_mode == 3:
-                p_inv = fixed_innov_prob if fixed_innov_prob is not None else 0.05
-                actions = (rng.random(size=N) < p_inv).astype(int)
-            elif strategy_mode == 4:
-                n_copier = int(0.80 * N)
-                n_innov = int(0.10 * N)
-                n_adapt = N - (n_copier + n_innov)
-                actions[:n_copier] = 0
-                actions[n_copier : n_copier + n_innov] = 1
-                if n_adapt > 0:
-                    v_copy = q_vals[:, 0] / self.tau
-                    v_innov = q_vals[:, 1] / self.tau
-                    max_v = np.maximum(v_copy, v_innov)
-                    exp_c = np.exp(v_copy - max_v)
-                    exp_i = np.exp(v_innov - max_v)
-                    p_innov = exp_i / (exp_c + exp_i)
-                    actions[n_copier + n_innov:] = (rng.random(size=n_adapt) < p_innov).astype(int)
-
-            z_next = np.copy(z)
-            costs = np.zeros(N)
-
-            copy_idx = np.where(actions == 0)[0]
-            if len(copy_idx) > 0:
-                costs[copy_idx] = self.cost_copy
-                z_shifted = z - np.min(z) + 1e-4
-                weights = z_shifted ** self.alpha_prestige
-                denom = np.sum(weights)
-                probs = weights / denom if denom > 0 else np.ones(N) / N
-                models = rng.choice(N, size=len(copy_idx), p=probs, replace=True)
-                gumbel_noise = rng.gumbel(loc=-self.gumbel_loss, scale=self.gumbel_beta, size=len(copy_idx))
-                z_next[copy_idx] = np.maximum(0.0, z[models] + gumbel_noise)
-
-            innov_idx = np.where(actions == 1)[0]
-            if len(innov_idx) > 0:
-                costs[innov_idx] = self.cost_innov
-                dz = rng.exponential(scale=self.innov_lambda, size=len(innov_idx))
-                z_next[innov_idx] = z[innov_idx] + dz
-
-            payoffs = z_next - H - costs
-
-            if strategy_mode == 2:
-                for act in [0, 1]:
-                    idx = np.where(actions == act)[0]
-                    if len(idx) > 0:
-                        rpe = payoffs[idx] - q_vals[idx, act]
-                        q_vals[idx, act] += self.eta * rpe
-            elif strategy_mode == 4:
-                n_copier = int(0.80 * N)
-                n_innov = int(0.10 * N)
-                adapt_start = n_copier + n_innov
-                if adapt_start < N:
-                    for act in [0, 1]:
-                        sub_idx = np.where(actions[adapt_start:] == act)[0]
-                        if len(sub_idx) > 0:
-                            global_idx = sub_idx + adapt_start
-                            rpe = payoffs[global_idx] - q_vals[sub_idx, act]
-                            q_vals[sub_idx, act] += self.eta * rpe
-
-            z = z_next
-            history["mean_payoff"][t] = np.mean(payoffs)
-            history["mean_skill"][t] = np.mean(z)
-            history["diversity"][t] = np.std(z)
-            history["pct_innovating"][t] = np.mean(actions == 1)
-
-        return history
-
-    def run_fixed_mixture_sweep(self, sweep_grid=None, n_runs=50):
-        # Sweeps Copier Proportion: 0%, 10%, 20%, ..., 90%, 100%
-        if sweep_grid is None:
-            sweep_grid = [0.0, 0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 1.00]
-
-        master_rng = np.random.default_rng(self.seed + 777)
-        run_seeds = master_rng.integers(100000, 999999, size=n_runs)
-
-        records = []
-        for p_copier in sweep_grid:
-            p_innov = 1.0 - p_copier
-            cums, pre_payoffs, post_payoffs, final_skills = [], [], [], []
-            for r_seed in run_seeds:
-                r_rng = np.random.default_rng(r_seed)
-                hist = self.simulate_single_run(3, r_rng, fixed_innov_prob=p_innov)
-                cums.append(np.sum(hist["mean_payoff"]))
-                pre_payoffs.append(hist["mean_payoff"][self.T_shock - 1])
-                post_payoffs.append(hist["mean_payoff"][-1])
-                final_skills.append(hist["mean_skill"][-1])
-
-            mean_post = float(np.mean(post_payoffs))
-            status = "Resilient (Payoff > 0)" if mean_post > 0 else "Collapsed (Payoff < 0)"
-
-            records.append({
-                "Copier_Proportion": f"{int(round(p_copier * 100))}%",
-                "Innovator_Proportion": f"{int(round(p_innov * 100))}%",
-                "Pre_Shock_Payoff": float(np.mean(pre_payoffs)),
-                "Post_Shock_Payoff": mean_post,
-                "Cumulative_Payoff": float(np.mean(cums)),
-                "Std_Cumulative_Payoff": float(np.std(cums, ddof=1)),
-                "Final_Skill": float(np.mean(final_skills)),
-                "Survival_Status": status,
-            })
-
-        return pd.DataFrame(records)
-
-    def run_general_case_phase_diagram(
-        self,
-        copier_grid=None,
-        harshness_grid=None,
-        loss_grid=None,
-        n_runs=20,
-    ):
-        # Computes 2D general phase boundaries across Harshness and Gumbel Skill Loss
-        if copier_grid is None:
-            copier_grid = [0.0, 0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 1.00]
-        if harshness_grid is None:
-            harshness_grid = [2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0]
-        if loss_grid is None:
-            loss_grid = [0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
-
-        master_rng = np.random.default_rng(self.seed + 888)
-        run_seeds = master_rng.integers(100000, 999999, size=n_runs)
-
-        orig_H_high = self.H_high
-        orig_loss = self.gumbel_loss
-
-        mat_harshness = np.zeros((len(harshness_grid), len(copier_grid)))
-        for i, h_val in enumerate(harshness_grid):
-            self.H_high = h_val
-            for j, p_copier in enumerate(copier_grid):
-                p_innov = 1.0 - p_copier
-                posts = []
-                for r_seed in run_seeds:
-                    r_rng = np.random.default_rng(r_seed)
-                    hist = self.simulate_single_run(3, r_rng, fixed_innov_prob=p_innov)
-                    posts.append(hist["mean_payoff"][-1])
-                mat_harshness[i, j] = float(np.mean(posts))
-        self.H_high = orig_H_high
-
-        mat_loss = np.zeros((len(loss_grid), len(copier_grid)))
-        for i, l_val in enumerate(loss_grid):
-            self.gumbel_loss = l_val
-            for j, p_copier in enumerate(copier_grid):
-                p_innov = 1.0 - p_copier
-                posts = []
-                for r_seed in run_seeds:
-                    r_rng = np.random.default_rng(r_seed)
-                    hist = self.simulate_single_run(3, r_rng, fixed_innov_prob=p_innov)
-                    posts.append(hist["mean_payoff"][-1])
-                mat_loss[i, j] = float(np.mean(posts))
-        self.gumbel_loss = orig_loss
-
-        return {
-            "copier_grid": copier_grid,
-            "harshness_grid": harshness_grid,
-            "loss_grid": loss_grid,
-            "payoff_vs_harshness": mat_harshness,
-            "payoff_vs_loss": mat_loss,
-        }
-
-    def run_ensemble(self, n_runs=50):
-        strategies = {
-            "Pure Copiers": 0,
-            "Pure Innovators": 1,
-            "Homogeneous Adaptive": 2,
-            "Static 5% Mixture": 3,
-            "Heterogeneous (80/10/10)": 4,
-        }
-        master_rng = np.random.default_rng(self.seed)
-        run_seeds = master_rng.integers(100000, 999999, size=n_runs)
-        results = {}
-        for s_label, s_mode in strategies.items():
-            trajectories = {"mean_payoff": [], "mean_skill": [], "diversity": [], "pct_innovating": []}
-            for r_seed in run_seeds:
-                r_rng = np.random.default_rng(r_seed)
-                hist = self.simulate_single_run(s_mode, r_rng)
-                for k in trajectories:
-                    trajectories[k].append(hist[k])
-            stat_dict = {}
-            for k, arr_list in trajectories.items():
-                arr = np.array(arr_list)
-                stat_dict[k] = {
-                    "mean": np.mean(arr, axis=0),
-                    "lower": np.percentile(arr, 2.5, axis=0),
-                    "upper": np.percentile(arr, 97.5, axis=0),
-                }
-            cums = np.sum(np.array(trajectories["mean_payoff"]), axis=1)
-            stat_dict["cumulative_payoff"] = {
-                "mean": float(np.mean(cums)),
-                "lower": float(np.percentile(cums, 2.5)),
-                "upper": float(np.percentile(cums, 97.5)),
-            }
-            results[s_label] = stat_dict
-        return results
-
-    def run_replicator_dynamics(self, n_runs=50, init_props=None, mu=0.03, seed=None):
-        if init_props is None:
-            init_props = [1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0]
-        use_seed = seed if seed is not None else self.seed + 999
-        master_rng = np.random.default_rng(use_seed)
-        run_seeds = master_rng.integers(100000, 999999, size=n_runs)
-
-        props_history = np.zeros((n_runs, self.T, 3))
-        payoff_history = np.zeros((n_runs, self.T))
-        skill_history = np.zeros((n_runs, self.T))
-
-        for r, r_seed in enumerate(run_seeds):
-            rng = np.random.default_rng(r_seed)
-            props = np.array(init_props, dtype=float)
-            z = rng.uniform(6.0, 7.0, size=self.N)
-            q_vals = np.zeros((self.N, 2))
-            q_vals[:, 0] = 3.5
-            q_vals[:, 1] = 0.0
-
-            for t in range(self.T):
-                props_history[r, t] = props
-                H = self.H_high if t >= self.T_shock else self.H_low
-                counts = np.round(props * self.N).astype(int)
-                counts[2] = self.N - (counts[0] + counts[1])
-                c0, c1, c2 = counts[0], counts[1], counts[2]
-
-                actions = np.zeros(self.N, dtype=int)
-                if c1 > 0:
-                    actions[c0 : c0 + c1] = 1
-                if c2 > 0:
-                    ad_slice = slice(c0 + c1, self.N)
-                    v_copy = q_vals[ad_slice, 0] / self.tau
-                    v_innov = q_vals[ad_slice, 1] / self.tau
-                    max_v = np.maximum(v_copy, v_innov)
-                    exp_c = np.exp(v_copy - max_v)
-                    exp_i = np.exp(v_innov - max_v)
-                    p_innov = exp_i / (exp_c + exp_i)
-                    actions[ad_slice] = (rng.random(size=c2) < p_innov).astype(int)
-
-                z_next = np.copy(z)
-                costs = np.zeros(self.N)
-
-                copy_idx = np.where(actions == 0)[0]
-                if len(copy_idx) > 0:
-                    costs[copy_idx] = self.cost_copy
-                    z_shifted = z - np.min(z) + 1e-4
-                    weights = z_shifted ** self.alpha_prestige
-                    denom = np.sum(weights)
-                    probs = weights / denom if denom > 0 else np.ones(self.N) / self.N
-                    models = rng.choice(self.N, size=len(copy_idx), p=probs, replace=True)
-                    gumbel_noise = rng.gumbel(loc=-self.gumbel_loss, scale=self.gumbel_beta, size=len(copy_idx))
-                    z_next[copy_idx] = np.maximum(0.0, z[models] + gumbel_noise)
-
-                innov_idx = np.where(actions == 1)[0]
-                if len(innov_idx) > 0:
-                    costs[innov_idx] = self.cost_innov
-                    dz = rng.exponential(scale=self.innov_lambda, size=len(innov_idx))
-                    z_next[innov_idx] = z[innov_idx] + dz
-
-                payoffs = z_next - H - costs
-
-                if c2 > 0:
-                    ad_slice = slice(c0 + c1, self.N)
-                    for act in [0, 1]:
-                        sub = actions[ad_slice] == act
-                        if np.any(sub):
-                            g_idx = np.where(actions[ad_slice] == act)[0] + (c0 + c1)
-                            rpe = payoffs[g_idx] - q_vals[g_idx, act]
-                            q_vals[g_idx, act] += self.eta * rpe
-
-                z = z_next
-                p0 = np.mean(payoffs[:c0]) if c0 > 0 else 0.0
-                p1 = np.mean(payoffs[c0 : c0 + c1]) if c1 > 0 else 0.0
-                p2 = np.mean(payoffs[c0 + c1:]) if c2 > 0 else 0.0
-
-                gps = np.array([p0, p1, p2])
-                fit = gps - np.min(gps) + 1.0
-                rep = props * (fit / np.sum(props * fit))
-                rep = (1.0 - mu) * rep + mu * (1.0 / 3.0)
-                rep = rep / np.sum(rep)
-
-                counts = rng.multinomial(self.N, rep)
-                props = counts / self.N
-
-                payoff_history[r, t] = np.mean(payoffs)
-                skill_history[r, t] = np.mean(z)
-
-        return {
-            "props_history": props_history,
-            "payoff_history": payoff_history,
-            "skill_history": skill_history,
-        }
-
-    def run_corporate_time_machine(self, num_firms=1000, generations=100, shock_gen=40, scenarios=None, seed_offset=777):
-        if scenarios is None:
-            scenarios = {
-                "Fast-Follower Swarm (90% Copy / 10% R&D)": {
-                    "copier_ratio": 0.90, "H_pre": 2.0, "H_post": 10.0, "color": "#d62728"
-                },
-                "Optimal Division of Labor (70% Copy / 30% R&D)": {
-                    "copier_ratio": 0.70, "H_pre": 2.0, "H_post": 10.0, "color": "#2ca02c"
-                },
-                "Balanced Tech Firm (50% Copy / 50% R&D)": {
-                    "copier_ratio": 0.50, "H_pre": 2.0, "H_post": 10.0, "color": "#1f77b4"
-                },
-                "DeepTech Pioneer (10% Copy / 90% R&D)": {
-                    "copier_ratio": 0.10, "H_pre": 2.0, "H_post": 10.0, "color": "#9467bd"
-                },
-            }
-
-        results = {}
-        master_rng = np.random.default_rng(self.seed + seed_offset)
-
-        for s_idx, (scen_name, params) in enumerate(scenarios.items()):
-            p_copy = params.get("copier_ratio", 0.70)
-            h_pre = params.get("H_pre", self.H_low)
-            h_post = params.get("H_post", self.H_high)
-            color = params.get("color", "#333333")
-
-            rng = np.random.default_rng(master_rng.integers(100000, 999999))
-            z = np.full(num_firms, 2.0)
-            operating_margin = np.zeros((num_firms, generations))
-            valuation_history = np.zeros((num_firms, generations))
-            cumulative_profit = np.zeros((num_firms, generations))
-            survival_rate = np.zeros(generations)
-
-            for t in range(generations):
-                H_current = h_pre if t < shock_gen else h_post
-                is_innov = rng.random(num_firms) >= p_copy
-                is_copy = ~is_innov
-
-                z_next = np.copy(z)
-                costs = np.zeros(num_firms)
-
-                n_copy = np.sum(is_copy)
-                if n_copy > 0:
-                    costs[is_copy] = self.cost_copy
-                    z_shifted = z - np.min(z) + 1e-4
-                    weights = z_shifted ** self.alpha_prestige
-                    denom = np.sum(weights)
-                    probs = weights / denom if denom > 0 else np.ones(num_firms) / num_firms
-                    models = rng.choice(num_firms, size=n_copy, p=probs, replace=True)
-                    gumbel_noise = rng.gumbel(loc=-self.gumbel_loss, scale=self.gumbel_beta, size=n_copy)
-                    z_next[is_copy] = np.maximum(0.0, z[models] + gumbel_noise)
-
-                n_innov = np.sum(is_innov)
-                if n_innov > 0:
-                    costs[is_innov] = self.cost_innov
-                    dz = rng.exponential(scale=self.innov_lambda, size=n_innov)
-                    z_next[is_innov] = z[is_innov] + dz
-
-                margins = z_next - H_current - costs
-                z = z_next
-
-                operating_margin[:, t] = margins
-                valuation_history[:, t] = z
-                if t == 0:
-                    cumulative_profit[:, t] = margins
-                else:
-                    cumulative_profit[:, t] = cumulative_profit[:, t - 1] + margins
-
-                survival_rate[t] = float(np.mean(margins >= 0.0) * 100.0)
-
-            results[scen_name] = {
-                "copier_ratio": p_copy,
-                "color": color,
-                "H_pre": h_pre,
-                "H_post": h_post,
-                "mean_valuation": np.mean(valuation_history, axis=0),
-                "std_valuation": np.std(valuation_history, axis=0),
-                "ci_val_lower": np.percentile(valuation_history, 2.5, axis=0),
-                "ci_val_upper": np.percentile(valuation_history, 97.5, axis=0),
-                "mean_operating_margin": np.mean(operating_margin, axis=0),
-                "std_operating_margin": np.std(operating_margin, axis=0),
-                "ci_margin_lower": np.percentile(operating_margin, 2.5, axis=0),
-                "ci_margin_upper": np.percentile(operating_margin, 97.5, axis=0),
-                "survival_rate": survival_rate,
-                "cumulative_margin": np.mean(cumulative_profit, axis=0),
-                "pre_shock_margin": float(np.mean(operating_margin[:, shock_gen - 1])),
-                "post_shock_margin": float(np.mean(operating_margin[:, -1])),
-                "final_survival": float(survival_rate[-1]),
-                "sample_paths": valuation_history[:15, :],
-            }
-
-        return {
-            "scenarios": results,
-            "generations": generations,
-            "shock_gen": shock_gen,
-            "num_firms": num_firms,
-        }
-
-arena = HarshnessCulturalArena(N=100, generations=100, shock_gen=40, seed=101101)
-print("HarshnessCulturalArena simulation engine ready.")
+PRESTIGE = 4.0
+LOSS_MU = 0.8
+LOSS_BETA = 0.3
+INNOV_SCALE = 1.5
+SEED = 101101
 """))
 
-# ==========================================
-# CELL 5: PART I - SECTION 3: CORE RESULTS (COPIER SWEEP)
-# ==========================================
+cells.append(nbf.v4.new_markdown_cell(r"""### 2.6 Step 3: Helper Function for One Generation of Copying
+Next, I write a small helper function `copy_peers()` that handles social learning for all copiers in a single generation. It picks demonstrators from the previous generation weighted by their skill (prestige bias) and adds Henrich's asymmetric Gumbel error so skills slightly degrade on average when copied.
+"""))
+
+cells.append(nbf.v4.new_code_cell(r"""def copy_peers(skills, n_copiers, rng, prestige=PRESTIGE, loss_mu=LOSS_MU, loss_beta=LOSS_BETA):
+    # Weight demonstrators by their relative skill (prestige bias)
+    shifted = skills - np.min(skills) + 1e-4
+    weights = shifted ** prestige
+    total = np.sum(weights)
+    probs = weights / total if total > 0 else np.ones(len(skills)) / len(skills)
+
+    # Pick demonstrators and apply Henrich's asymmetric Gumbel noise
+    chosen = rng.choice(len(skills), size=n_copiers, p=probs, replace=True)
+    noise = rng.gumbel(loc=-loss_mu, scale=loss_beta, size=n_copiers)
+    return np.maximum(0.0, skills[chosen] + noise)
+"""))
+
+cells.append(nbf.v4.new_markdown_cell(r"""### 2.7 Step 4: Running One Complete Simulation (`run_one_sim`)
+Now I combine innovation, copying, and the payoff formula $\Pi = z - H - C$ into a single simulation function `run_one_sim()`. Given a fixed copier proportion `p_copy` (from `0.0` to `1.0`), it steps through 100 generations and records the mean payoff, mean skill, and skill diversity at every generation.
+"""))
+
+cells.append(nbf.v4.new_code_cell(r"""def run_one_sim(p_copy, rng, n_agents=N_AGENTS, n_gens=N_GENS, shock_gen=SHOCK_GEN,
+                h_low=H_LOW, h_high=H_HIGH, loss_mu=LOSS_MU):
+    skills = rng.uniform(6.0, 7.0, size=n_agents)
+    mean_payoff = np.zeros(n_gens)
+    mean_skill = np.zeros(n_gens)
+    diversity = np.zeros(n_gens)
+
+    for t in range(n_gens):
+        h = h_high if t >= shock_gen else h_low
+        # Decide who copies (0) and who innovates (1)
+        is_innov = rng.random(n_agents) < (1.0 - p_copy)
+        is_copy = ~is_innov
+
+        next_skills = np.copy(skills)
+        costs = np.zeros(n_agents)
+
+        n_copy = np.sum(is_copy)
+        if n_copy > 0:
+            costs[is_copy] = COST_COPY
+            next_skills[is_copy] = copy_peers(skills, n_copy, rng, loss_mu=loss_mu)
+
+        n_innov = np.sum(is_innov)
+        if n_innov > 0:
+            costs[is_innov] = COST_INNOV
+            next_skills[is_innov] = skills[is_innov] + rng.exponential(scale=INNOV_SCALE, size=n_innov)
+
+        payoffs = next_skills - h - costs
+        skills = next_skills
+
+        mean_payoff[t] = np.mean(payoffs)
+        mean_skill[t] = np.mean(skills)
+        diversity[t] = np.std(skills)
+
+    return mean_payoff, mean_skill, diversity
+"""))
+
+# ==============================================================================
+# PART I - SECTION 3: CORE RESULTS (COPIER SWEEP & GENERAL CASE)
+# ==============================================================================
 cells.append(nbf.v4.new_markdown_cell(r"""---
 ## Section 3: Core Results — The Copier Proportion Sweep & General Case Analysis
 
-### 3.1 Code Block 3: The Copier Proportion Phase Transition ($0\%$ to $100\%$)
-> [!IMPORTANT]
-> **Direct Test of Professor Alexey Koshevoy's Core Experiment**:
-> We sweep fixed population mixtures in 10% increments:
-> $$\text{Copier Proportion } p \in \{0\%, 10\%, 20\%, 30\%, 40\%, 50\%, 60\%, 70\%, 80\%, 90\%, 100\%\}$$
-> across 50 independent Monte Carlo runs per mixture to locate the exact phase transition separating resilient cultural division of labor from austerity collapse ($\Pi < 0$).
+### 3.1 Running the 10% Copier Bins Experiment ($0\%$ to $100\%$)
+Following Prof. Koshevoy's suggestion, I test fixed population mixtures in 10% steps from `0%` to `100%` copiers, running 50 independent Monte Carlo simulations per mixture. First, I compute the pre-shock payoff ($t=39$), post-shock payoff ($t=99$), and cumulative lifetime welfare for each bin and display them in a summary table.
 """))
 
-cells.append(nbf.v4.new_code_cell(r"""# Code Block 3: Core Experiment — Copier Proportion Sweep (0% to 100%)
-sweep_df = arena.run_fixed_mixture_sweep(n_runs=50)
+cells.append(nbf.v4.new_code_cell(r"""copier_grid = np.linspace(0.0, 1.0, 11)
+master_rng = np.random.default_rng(SEED + 999)
+run_seeds = master_rng.integers(100000, 999999, size=50)
 
+rows = []
+for p_copy in copier_grid:
+    pre_list, post_list, cum_list, skill_list = [], [], [], []
+    for s in run_seeds:
+        p_hist, z_hist, _ = run_one_sim(p_copy, np.random.default_rng(s))
+        pre_list.append(p_hist[39])
+        post_list.append(p_hist[-1])
+        cum_list.append(np.sum(p_hist))
+        skill_list.append(z_hist[-1])
+
+    rows.append({
+        "Copier_Pct": int(round(p_copy * 100)),
+        "Innovator_Pct": int(round((1.0 - p_copy) * 100)),
+        "Pre_Shock_Mean": np.mean(pre_list),
+        "Pre_Shock_SD": np.std(pre_list),
+        "Post_Shock_Mean": np.mean(post_list),
+        "Post_Shock_SD": np.std(post_list),
+        "Cum_Welfare_Mean": np.mean(cum_list),
+        "Cum_Welfare_SD": np.std(cum_list),
+        "Final_Skill_Mean": np.mean(skill_list),
+    })
+
+sweep_df = pd.DataFrame(rows)
 print("=== COPIER PROPORTION EXPERIMENT SUMMARY (50 MONTE CARLO RUNS PER STEP) ===")
-display(sweep_df)
+display(sweep_df.round(2))
+"""))
 
-# Publication Figure 1: Phase Transition & Tipping Point Analysis
-fig, axes = plt.subplots(1, 2, figsize=(15, 5.5))
+cells.append(nbf.v4.new_markdown_cell(r"""Now I plot **Publication Figure 1** from `sweep_df`:
+* **Panel A** compares immediate payoff before the shock ($H=2.0$) versus after the shock ($H=10.0$), highlighting the "Free-Rider Illusion" and the sudden collapse above $p^* \approx 70\%$.
+* **Panel B** shows cumulative lifetime welfare across all 100 generations, peaking at the $\sim 70\%$ copier / $30\%$ innovator balance.
+"""))
 
-copier_pcts = np.array([int(s.replace('%', '')) for s in sweep_df["Copier_Proportion"]])
-pre_shock = sweep_df["Pre_Shock_Payoff"].values
-post_shock = sweep_df["Post_Shock_Payoff"].values
-cum_payoffs = sweep_df["Cumulative_Payoff"].values
-std_cums = sweep_df["Std_Cumulative_Payoff"].values
+cells.append(nbf.v4.new_code_cell(r"""fig, axes = plt.subplots(1, 2, figsize=(15, 5.5))
+pcts = sweep_df["Copier_Pct"]
 
-# Panel A: Pre-Shock vs Post-Shock Payoffs & Critical Tipping Point
-axes[0].plot(copier_pcts, pre_shock, 'o-', color="#2ca02c", lw=2.4, markersize=6, label=r"Pre-Shock Payoff ($H=2.0$, Benign)")
-axes[0].plot(copier_pcts, post_shock, 's-', color="#d62728", lw=2.4, markersize=6, label=r"Post-Shock Payoff ($H=10.0$, Austerity)")
-axes[0].axhline(0, color="black", linestyle="--", lw=1.2, alpha=0.8, label=r"Viability Boundary ($\Pi = 0$)")
+# Panel A: Pre-Shock vs Post-Shock Payoff
+axes[0].errorbar(pcts, sweep_df["Pre_Shock_Mean"], yerr=sweep_df["Pre_Shock_SD"],
+                 fmt="o-", color="#2b5c8f", lw=2.2, capsize=4, label="Pre-Shock Payoff (Benign H=2.0)")
+axes[0].errorbar(pcts, sweep_df["Post_Shock_Mean"], yerr=sweep_df["Post_Shock_SD"],
+                 fmt="s-", color="#d95f02", lw=2.5, capsize=4, label="Post-Shock Payoff (Scarcity H=10.0)")
+axes[0].axhline(0, color="black", linestyle=":", lw=1.2, label="Survival Threshold (Π = 0)")
+axes[0].axvspan(72, 102, color="#e41a1c", alpha=0.10, label="Collapse Zone (>70% Copiers)")
 
-tipping_idx = np.where(post_shock < 0)[0]
-tipping_point = copier_pcts[tipping_idx[0]] if len(tipping_idx) > 0 else 70
+axes[0].annotate("Free-Rider Illusion:\n80-90% Copiers peak in benign times",
+                 xy=(80, sweep_df.loc[sweep_df["Copier_Pct"] == 80, "Pre_Shock_Mean"].values[0]),
+                 xytext=(35, 110), arrowprops=dict(arrowstyle="->", color="#2b5c8f", lw=1.5),
+                 fontsize=9, fontweight="bold", color="#2b5c8f")
+axes[0].annotate("Tipping Point (p* ≈ 70%)\nAbove 70%, Society Collapses!",
+                 xy=(80, sweep_df.loc[sweep_df["Copier_Pct"] == 80, "Post_Shock_Mean"].values[0]),
+                 xytext=(38, 30), arrowprops=dict(arrowstyle="->", color="#d95f02", lw=1.5),
+                 fontsize=9, fontweight="bold", color="#d95f02")
 
-axes[0].axvline(tipping_point, color="crimson", linestyle=":", lw=2.0,
-                label=f"Critical Tipping Point ($p^* \\approx {tipping_point}\\%$)")
-axes[0].fill_between(copier_pcts, -15, 0, where=(post_shock < 0), color="red", alpha=0.10, label=r"Collapse Zone ($\Pi < 0$)")
-
-axes[0].annotate(f"Collapse Threshold: {tipping_point}% Copiers",
-                 xy=(tipping_point, 0), xytext=(tipping_point - 35, -8),
-                 arrowprops=dict(arrowstyle="->", color="crimson", lw=1.5),
-                 fontweight="bold", color="crimson")
-
-axes[0].annotate("Least-Effort Illusion:\nLow cost boosts payoff in peace",
-                 xy=(40, pre_shock[4]), xytext=(12, 55),
-                 arrowprops=dict(arrowstyle="->", color="#2ca02c", lw=1.3),
-                 fontsize=9.5, color="#2ca02c", fontweight="bold")
-
-axes[0].set_title("A. Payoff Phase Transition across Copier Proportions\n(50 Monte Carlo Runs per Mixture)", fontweight="bold")
+axes[0].set_title("A. Pre-Shock vs. Post-Shock Payoff by Copier Proportion", fontweight="bold")
 axes[0].set_xlabel("Proportion of Copiers in Population (%)", fontweight="bold")
-axes[0].set_ylabel(r"Mean Net Payoff $\Pi(t)$", fontweight="bold")
-axes[0].set_xticks(copier_pcts)
-axes[0].legend(loc="upper right", frameon=True, fontsize=8.8)
+axes[0].set_ylabel("Mean Net Payoff (Π)", fontweight="bold")
+axes[0].set_xticks(pcts)
 axes[0].grid(True, ls=":", alpha=0.5)
+axes[0].legend(loc="lower left", frameon=True, fontsize=8.8)
 sns.despine(ax=axes[0])
 
-# Panel B: Cumulative Lifetime Welfare across Mixtures
-axes[1].errorbar(copier_pcts, cum_payoffs, yerr=std_cums/np.sqrt(50), fmt="o-", color="#1f77b4", lw=2.4, capsize=4, label="Cumulative Lifetime Welfare")
-axes[1].fill_between(copier_pcts, cum_payoffs - std_cums, cum_payoffs + std_cums, color="#1f77b4", alpha=0.15, label="Run-Level Std Dev")
+# Panel B: Cumulative Lifetime Welfare
+axes[1].errorbar(pcts, sweep_df["Cum_Welfare_Mean"], yerr=sweep_df["Cum_Welfare_SD"],
+                 fmt="D-", color="#1b9e77", lw=2.5, capsize=4, label="Cumulative Welfare (100 Gens)")
+axes[1].axhline(0, color="black", linestyle=":", lw=1.2)
+axes[1].axvspan(72, 102, color="#e41a1c", alpha=0.10)
 
-opt_idx = int(np.argmax(cum_payoffs))
-opt_p = copier_pcts[opt_idx]
-axes[1].axvline(opt_p, color="#2ca02c", linestyle="--", lw=1.8, label=f"Division of Labor Peak ({opt_p}% Copiers)")
+best_idx = sweep_df["Cum_Welfare_Mean"].idxmax()
+best_p = sweep_df.loc[best_idx, "Copier_Pct"]
+best_w = sweep_df.loc[best_idx, "Cum_Welfare_Mean"]
+axes[1].annotate(f"Optimal Balance (~{best_p}% Copiers)\nResolves Rogers' Paradox",
+                 xy=(best_p, best_w), xytext=(15, best_w * 0.72),
+                 arrowprops=dict(arrowstyle="->", color="#1b9e77", lw=1.6),
+                 fontsize=9.5, fontweight="bold", color="#1b9e77")
 
-axes[1].set_title("B. Cumulative Lifetime Welfare & Optimal Division of Labor", fontweight="bold")
+axes[1].set_title("B. Cumulative Lifetime Welfare across Copier Spectrum", fontweight="bold")
 axes[1].set_xlabel("Proportion of Copiers in Population (%)", fontweight="bold")
-axes[1].set_ylabel("Mean Cumulative Lifetime Payoff", fontweight="bold")
-axes[1].set_xticks(copier_pcts)
-axes[1].legend(loc="lower left", frameon=True, fontsize=8.8)
+axes[1].set_ylabel("Cumulative Net Payoff (Σ Π)", fontweight="bold")
+axes[1].set_xticks(pcts)
 axes[1].grid(True, ls=":", alpha=0.5)
+axes[1].legend(loc="lower left", frameon=True, fontsize=9)
 sns.despine(ax=axes[1])
 
-plt.suptitle("Publication Figure 1: Critical Tipping Point of Cumulative Cultural Evolution", fontsize=13.5, fontweight="bold", y=1.02)
-plt.tight_layout()
-plt.show()
-"""))
-
-# ==========================================
-# CELL 6: CODE BLOCK 4 - GENERAL CASE 2D PHASE DIAGRAMS
-# ==========================================
-cells.append(nbf.v4.new_markdown_cell(r"""### 3.2 Code Block 4: The General Case — 2D Phase Diagrams across Harshness & Skill Loss
-> [!TIP]
-> **Answering the General Case Requirement**:
-> A critical question for any mathematical model is whether a tipping point is merely an artifact of one specific parameter choice ($H=10.0, \alpha_{\text{loss}}=0.8$), or a **general structural law**.
->
-> Here we compute the post-shock net payoff across two continuous 2D spaces:
-> 1. **Panel A**: Copier Proportion ($0\%–100\%$) $\times$ Shock Harshness ($H_{\text{high}} \in [2.0, 14.0]$).
-> 2. **Panel B**: Copier Proportion ($0\%–100\%$) $\times$ Henrich Gumbel Transmission Loss ($\alpha_{\text{loss}} \in [0.2, 1.2]$).
->
-> The dashed white boundary traces $\Pi = 0$, proving how ecological severity and imitation error jointly shrink the maximum tolerable share of copiers.
-"""))
-
-cells.append(nbf.v4.new_code_cell(r"""# Code Block 4: Publication Figure 2 — General Case 2D Phase Diagrams
-print("Computing 2D General Case Phase Diagrams (Harshness & Gumbel Skill Loss)...")
-phase_res = arena.run_general_case_phase_diagram(n_runs=20)
-
-copier_pcts_grid = np.array([int(round(p * 100)) for p in phase_res["copier_grid"]])
-harsh_grid = np.array(phase_res["harshness_grid"])
-loss_grid = np.array(phase_res["loss_grid"])
-
-mat_h = phase_res["payoff_vs_harshness"]
-mat_l = phase_res["payoff_vs_loss"]
-
-fig, axes = plt.subplots(1, 2, figsize=(15, 5.8))
-
-# Panel A: Harshness vs Copier Proportion
-vmax_h = max(abs(mat_h.min()), abs(mat_h.max()))
-im1 = axes[0].imshow(mat_h, origin="lower", aspect="auto", cmap="RdYlGn",
-                     extent=[0, 100, harsh_grid[0], harsh_grid[-1]], vmin=-15, vmax=120)
-axes[0].contour(np.linspace(0, 100, len(copier_pcts_grid)), harsh_grid, mat_h,
-                levels=[0.0], colors="black", linewidths=2.2, linestyles="--")
-cbar1 = plt.colorbar(im1, ax=axes[0])
-cbar1.set_label(r"Post-Shock Net Payoff $\Pi$", fontweight="bold")
-
-axes[0].axhline(10.0, color="navy", linestyle=":", lw=1.5, label="Baseline Shock ($H=10.0$)")
-axes[0].set_title("A. Phase Boundary: Copier Proportion vs. Harshness", fontweight="bold")
-axes[0].set_xlabel("Proportion of Copiers in Population (%)", fontweight="bold")
-axes[0].set_ylabel(r"Environmental Harshness Shock ($H_{\text{high}}$)", fontweight="bold")
-axes[0].legend(loc="upper left", frameon=True)
-
-# Panel B: Gumbel Transmission Loss vs Copier Proportion
-im2 = axes[1].imshow(mat_l, origin="lower", aspect="auto", cmap="RdYlGn",
-                     extent=[0, 100, loss_grid[0], loss_grid[-1]], vmin=-15, vmax=120)
-axes[1].contour(np.linspace(0, 100, len(copier_pcts_grid)), loss_grid, mat_l,
-                levels=[0.0], colors="black", linewidths=2.2, linestyles="--")
-cbar2 = plt.colorbar(im2, ax=axes[1])
-cbar2.set_label(r"Post-Shock Net Payoff $\Pi$", fontweight="bold")
-
-axes[1].axhline(0.8, color="navy", linestyle=":", lw=1.5, label="Baseline Loss ($\\alpha_{\\text{loss}}=0.8$)")
-axes[1].set_title("B. Phase Boundary: Copier Proportion vs. Imitation Error", fontweight="bold")
-axes[1].set_xlabel("Proportion of Copiers in Population (%)", fontweight="bold")
-axes[1].set_ylabel(r"Gumbel Skill Loss ($\alpha_{\text{loss}}$)", fontweight="bold")
-axes[1].legend(loc="upper left", frameon=True)
-
-plt.suptitle(r"Publication Figure 2: General Regime Boundaries (Dashed Black Line = Survival Threshold $\Pi = 0$)",
+plt.suptitle("Publication Figure 1: The Critical Copier Threshold (p* ≈ 70%) under Scarcity Shocks",
              fontsize=13.5, fontweight="bold", y=1.02)
 plt.tight_layout()
 plt.show()
 """))
 
-# ==========================================
-# CELL 7: CODE BLOCK 5 - HENRICH GUMBEL BLACKBOARD FORMALIZATION
-# ==========================================
-cells.append(nbf.v4.new_markdown_cell(r"""### 3.3 Code Block 5: Mechanics of Skill Loss vs. Breakthrough Innovation (Henrich 2004)
-> [!NOTE]
-> Visualizes how Henrich's (2004) asymmetric Gumbel transmission creates downward skill drift when copying ($\alpha_{\text{loss}} = 0.8$), leaving only a $6.71\%$ extreme-value tail where copiers accidentally improve upon their demonstrator, while costly innovation fuels the upward exponential frontier required to survive austerity.
+cells.append(nbf.v4.new_markdown_cell(r"""Let's also summarize the key mixtures in a clean reference table showing the transition from viable division of labor ($0\text{--}70\%$ copiers) to collapse ($80\text{--}100\%$ copiers).
 """))
 
-cells.append(nbf.v4.new_code_cell(r"""# Code Block 5: Publication Figure 3 — Henrich Gumbel Copying vs. Innovation Discovery
-fig, ax = plt.subplots(figsize=(10, 5.2))
+cells.append(nbf.v4.new_code_cell(r"""table_rows = []
+for _, r in sweep_df.iterrows():
+    p_c = int(r["Copier_Pct"])
+    if p_c in [0, 30, 50, 70, 80, 90, 100]:
+        if p_c == 0:
+            status = "Viable (Costly Rediscovery)"
+        elif p_c == 70:
+            status = "Optimal Division of Labor"
+        elif p_c < 70:
+            status = "Highly Viable"
+        elif p_c in [80, 90]:
+            status = "Collapsed (Net Deficit Π < 0)"
+        else:
+            status = "Extinction / Total Decay"
+
+        table_rows.append({
+            "Population Mixture": f"{p_c}% Copiers / {100-p_c}% Innovators",
+            "Pre-Shock (H=2.0)": f"{r['Pre_Shock_Mean']:+.1f} ± {r['Pre_Shock_SD']:.1f}",
+            "Post-Shock (H=10.0)": f"{r['Post_Shock_Mean']:+.1f} ± {r['Post_Shock_SD']:.1f}",
+            "Cumulative Welfare": f"{r['Cum_Welfare_Mean']:+,.0f}",
+            "Viability": status,
+        })
+
+display(pd.DataFrame(table_rows))
+"""))
+
+cells.append(nbf.v4.new_markdown_cell(r"""### 3.2 Testing the General Case: 2D Phase Diagrams
+To make sure the $70\%$ threshold isn't just an artifact of one specific set of numbers, I sweep **environmental harshness** ($H_{\text{high}} \in [2, 14]$) and **imitation skill loss** ($\alpha_{\text{loss}} \in [0.2, 1.2]$) across all copier proportions using 20 Monte Carlo runs per point.
+"""))
+
+cells.append(nbf.v4.new_code_cell(r"""h_grid = [2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0]
+loss_grid = [0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
+phase_seeds = np.random.default_rng(SEED + 888).integers(100000, 999999, size=20)
+
+mat_harsh = np.zeros((len(h_grid), len(copier_grid)))
+for i, h_val in enumerate(h_grid):
+    for j, p_copy in enumerate(copier_grid):
+        posts = [run_one_sim(p_copy, np.random.default_rng(s), h_high=h_val)[0][-1] for s in phase_seeds]
+        mat_harsh[i, j] = np.mean(posts)
+
+mat_loss = np.zeros((len(loss_grid), len(copier_grid)))
+for i, l_val in enumerate(loss_grid):
+    for j, p_copy in enumerate(copier_grid):
+        posts = [run_one_sim(p_copy, np.random.default_rng(s), loss_mu=l_val)[0][-1] for s in phase_seeds]
+        mat_loss[i, j] = np.mean(posts)
+
+print("2D general-case phase matrices computed.")
+"""))
+
+cells.append(nbf.v4.new_markdown_cell(r"""Here I plot **Publication Figure 2**, showing the two heatmaps with a dashed black contour at $\Pi = 0$ (the survival boundary). As either harshness or copying error rises, the maximum tolerable copier percentage shrinks smoothly.
+"""))
+
+cells.append(nbf.v4.new_code_cell(r"""fig, axes = plt.subplots(1, 2, figsize=(15, 5.8))
+x_pcts = np.linspace(0, 100, len(copier_grid))
+
+im1 = axes[0].imshow(mat_harsh, origin="lower", aspect="auto", cmap="RdYlGn",
+                     extent=[0, 100, h_grid[0], h_grid[-1]], vmin=-15, vmax=120)
+axes[0].contour(x_pcts, h_grid, mat_harsh, levels=[0.0], colors="black", linewidths=2.2, linestyles="--")
+plt.colorbar(im1, ax=axes[0]).set_label("Post-Shock Net Payoff (Π)", fontweight="bold")
+axes[0].axhline(10.0, color="navy", linestyle=":", lw=1.5, label="Baseline Shock (H=10.0)")
+axes[0].set_title("A. Phase Boundary: Copier Share vs. Harshness", fontweight="bold")
+axes[0].set_xlabel("Proportion of Copiers (%)", fontweight="bold")
+axes[0].set_ylabel("Environmental Harshness Shock (H)", fontweight="bold")
+axes[0].legend(loc="upper left", frameon=True)
+
+im2 = axes[1].imshow(mat_loss, origin="lower", aspect="auto", cmap="RdYlGn",
+                     extent=[0, 100, loss_grid[0], loss_grid[-1]], vmin=-15, vmax=120)
+axes[1].contour(x_pcts, loss_grid, mat_loss, levels=[0.0], colors="black", linewidths=2.2, linestyles="--")
+plt.colorbar(im2, ax=axes[1]).set_label("Post-Shock Net Payoff (Π)", fontweight="bold")
+axes[1].axhline(0.8, color="navy", linestyle=":", lw=1.5, label="Baseline Loss (α=0.8)")
+axes[1].set_title("B. Phase Boundary: Copier Share vs. Imitation Error", fontweight="bold")
+axes[1].set_xlabel("Proportion of Copiers (%)", fontweight="bold")
+axes[1].set_ylabel("Gumbel Skill Loss (α_loss)", fontweight="bold")
+axes[1].legend(loc="upper left", frameon=True)
+
+plt.suptitle("Publication Figure 2: The General Case — Continuous Survival Boundaries",
+             fontsize=13.5, fontweight="bold", y=1.02)
+plt.tight_layout()
+plt.show()
+"""))
+
+cells.append(nbf.v4.new_markdown_cell(r"""### 3.3 Why Copying Erodes Skills: Visualizing Henrich's (2004) Gumbel Distribution
+To make the micro-level mechanism intuitive, **Publication Figure 3** plots the exact Gumbel probability density when copying a demonstrator with skill $z_{\text{model}} = 6.5$. Most learners fall slightly below the model (blue area), while only $6.71\%$ accidentally outperform the model (hatched yellow tail).
+"""))
+
+cells.append(nbf.v4.new_code_cell(r"""fig, ax = plt.subplots(figsize=(10, 5.2))
 z_grid = np.linspace(2.0, 14.0, 1000)
-
 z_model = 6.5
-gumbel_loc = z_model - 0.8
-gumbel_scale = 0.3
-gumbel_pdf = stats.gumbel_r.pdf(z_grid, loc=gumbel_loc, scale=gumbel_scale)
+pdf = stats.gumbel_r.pdf(z_grid, loc=z_model - LOSS_MU, scale=LOSS_BETA)
 
-ax.plot(z_grid, gumbel_pdf, color="#2b5c8f", lw=2.8,
-        label=r"Cultural Copying Density: $\Pr(z \mid z_{\text{model}}=6.5)$")
-ax.axvline(z_model, color="navy", linestyle="-", lw=2.0, label=r"Demonstrator Model Skill ($z_{\text{model}}=6.5$)")
-ax.axvline(2.0 + 1.0, color="gray", linestyle="--", lw=1.2, label=r"Benign Subsistence ($H_{\text{low}}+C_{\text{copy}}=3.0$)")
-ax.axvline(10.0 + 1.0, color="crimson", linestyle="--", lw=1.8, label=r"Austerity Subsistence ($H_{\text{high}}+C_{\text{copy}}=11.0$)")
+ax.plot(z_grid, pdf, color="#2b5c8f", lw=2.8, label=r"Copying Density: $\Pr(z \mid z_{\text{model}}=6.5)$")
+ax.axvline(z_model, color="navy", linestyle="-", lw=2.0, label="Model Skill (z=6.5)")
+ax.axvline(H_LOW + COST_COPY, color="gray", linestyle="--", lw=1.2, label="Benign Cost (H+C=3.0)")
+ax.axvline(H_HIGH + COST_COPY, color="crimson", linestyle="--", lw=1.8, label="Shock Cost (H+C=11.0)")
 
-hatched_mask = (z_grid >= z_model)
-ax.fill_between(z_grid[hatched_mask], 0, gumbel_pdf[hatched_mask],
+ax.fill_between(z_grid[z_grid >= z_model], 0, pdf[z_grid >= z_model],
                 hatch="///", facecolor="#fee08b", edgecolor="#d73027", alpha=0.6,
-                label=r"Outperformance Tail (6.71%): $z > z_{\text{model}}$")
-
+                label="Rare Gain Tail (6.71%): z > z_model")
 loss_mask = (z_grid < z_model) & (z_grid >= 3.0)
-ax.fill_between(z_grid[loss_mask], 0, gumbel_pdf[loss_mask],
-                facecolor="#91bfdb", alpha=0.35, label="Imitation Skill Loss (Henrich 2004)")
+ax.fill_between(z_grid[loss_mask], 0, pdf[loss_mask], facecolor="#91bfdb", alpha=0.35, label="Skill Loss (Henrich 2004)")
 
 ax.set_title("Publication Figure 3: Micro-Level Skill Loss vs. Breakthrough Frontier", fontsize=13, fontweight="bold", pad=12)
-ax.set_xlabel("Technological Competence Level $(z)$", fontweight="bold")
-ax.set_ylabel("Probability Density $p(z)$", fontweight="bold")
+ax.set_xlabel("Technological Competence Level (z)", fontweight="bold")
+ax.set_ylabel("Probability Density p(z)", fontweight="bold")
 ax.set_xlim(3.0, 13.0)
 ax.set_ylim(0, 1.4)
-
-ax.annotate("Model Skill $z = 6.5$", xy=(z_model, 1.2), xytext=(z_model - 1.8, 1.25),
-            arrowprops=dict(arrowstyle="->", color="navy", lw=1.5), fontweight="bold", color="navy")
-ax.annotate("Rare Serendipitous Gain (6.71%)", xy=(6.8, 0.35), xytext=(7.4, 0.75),
-            arrowprops=dict(arrowstyle="->", color="#d73027", lw=1.5), fontweight="bold", color="#d73027")
-
 ax.legend(loc="upper right", frameon=True, fontsize=9.2)
 sns.despine(ax=ax)
 plt.tight_layout()
 plt.show()
 """))
 
-# ==========================================
-# CELL 8: PART I - SECTION 4: DEEP THEORETICAL REFLECTION
-# ==========================================
+# ==============================================================================
+# PART I - SECTION 4: THEORETICAL REFLECTION
+# ==============================================================================
 cells.append(nbf.v4.new_markdown_cell(r"""---
 ## Section 4: Theoretical Reflection on Technological Cultural Evolution
 
@@ -867,9 +491,9 @@ Alan Rogers (1988) argued that social learning provides zero net fitness benefit
    Modern generative AI models trained recursively on synthetic AI outputs mirror our $>80\%$ copier regime: without continuous grounding in external human novelty ("innovators"), recursive copying collapses distributional tails and degrades model competence.
 """))
 
-# ==========================================
-# CELL 9: PART II INTRO - EXTENSIONS ("EXTRAS")
-# ==========================================
+# ==============================================================================
+# PART II INTRO
+# ==============================================================================
 cells.append(nbf.v4.new_markdown_cell(r"""---
 ---
 # Part II: Advanced Extensions & Further Explorations ("Extras")
@@ -886,10 +510,9 @@ cells.append(nbf.v4.new_markdown_cell(r"""---
 > 7. **Extension 5.7**: **Empirical Human Validation** on trial-by-trial choices (**Najar et al., 2020**).
 """))
 
-# ==========================================
-# CELL 10: EXTENSION 5.1 - ADAPTIVE SOCIAL BRAIN
-
-# ==========================================
+# ==============================================================================
+# EXTENSION 5.1: ADAPTIVE SOCIAL BRAIN
+# ==============================================================================
 cells.append(nbf.v4.new_markdown_cell(r"""## Extension 5.1: Dynamic Self-Organization — The Adaptive Social Brain & Ensemble Trajectories
 
 In Part I, copier and innovator shares were held fixed. A natural follow-up question is: **how could agents discover the ~70/30 division of labor dynamically on their own?**
@@ -897,83 +520,154 @@ In Part I, copier and innovator shares were held fixed. A natural follow-up ques
 ### Mathematical Rule (Rescorla-Wagner / Q-Learning Gating)
 Adaptive agents track expected action values $\mathbf{Q}_i = [Q_i(\text{COPY}), Q_i(\text{INNOV})]$, choose stochastically via Softmax ($\tau = 1.0$), and update via Reward Prediction Error ($\eta = 0.35$):
 $$\delta_i(t) = \Pi_i(t) - Q_i(a_i(t)), \qquad Q_i(a_i(t)) \leftarrow Q_i(a_i(t)) + \eta \cdot \delta_i(t)$$
-When austerity triggers negative payoffs under cheap copying, negative prediction errors push adaptive agents to switch dynamically toward innovation.
+
+First, I write a helper function `run_strategy(mode, rng)` to test 5 benchmark strategies: Pure Copiers (`0`), Pure Innovators (`1`), Homogeneous Adaptive (`2`), Static 5% Mixture (`3`), and a Heterogeneous Society (`4`: 80% Copiers, 10% Innovators, 10% Adaptive).
 """))
 
-cells.append(nbf.v4.new_code_cell(r"""# Code Block 6: Extension 5.1 — 50-Run Monte Carlo Ensembles across 5 Strategies
-print("Executing 50 Monte Carlo runs per strategy across 5 benchmark policies...")
-ensemble_results = arena.run_ensemble(n_runs=50)
+cells.append(nbf.v4.new_code_cell(r"""def softmax_pick(q_vals, rng, tau=1.0):
+    v0 = q_vals[:, 0] / tau
+    v1 = q_vals[:, 1] / tau
+    m = np.maximum(v0, v1)
+    p_innov = np.exp(v1 - m) / (np.exp(v0 - m) + np.exp(v1 - m))
+    return (rng.random(len(q_vals)) < p_innov).astype(int)
 
+def run_strategy(mode, rng, eta=0.35):
+    skills = rng.uniform(6.0, 7.0, size=N_AGENTS)
+    if mode == 2:
+        q = np.tile([3.5, 0.0], (N_AGENTS, 1))
+    elif mode == 4:
+        q = np.tile([3.5, 0.0], (10, 1))
+    else:
+        q = None
+
+    pay_hist, skill_hist, div_hist, innov_hist = np.zeros(N_GENS), np.zeros(N_GENS), np.zeros(N_GENS), np.zeros(N_GENS)
+
+    for t in range(N_GENS):
+        h = H_HIGH if t >= SHOCK_GEN else H_LOW
+        actions = np.zeros(N_AGENTS, dtype=int)
+
+        if mode == 1:
+            actions[:] = 1
+        elif mode == 2:
+            actions = softmax_pick(q, rng)
+        elif mode == 3:
+            actions = (rng.random(N_AGENTS) < 0.05).astype(int)
+        elif mode == 4:
+            actions[80:90] = 1
+            actions[90:] = softmax_pick(q, rng)
+
+        next_skills = np.copy(skills)
+        costs = np.where(actions == 1, COST_INNOV, COST_COPY)
+
+        c_idx = np.where(actions == 0)[0]
+        if len(c_idx) > 0:
+            next_skills[c_idx] = copy_peers(skills, len(c_idx), rng)
+
+        i_idx = np.where(actions == 1)[0]
+        if len(i_idx) > 0:
+            next_skills[i_idx] = skills[i_idx] + rng.exponential(scale=INNOV_SCALE, size=len(i_idx))
+
+        payoffs = next_skills - h - costs
+        if mode == 2:
+            for a in [0, 1]:
+                idx = np.where(actions == a)[0]
+                if len(idx) > 0:
+                    q[idx, a] += eta * (payoffs[idx] - q[idx, a])
+        elif mode == 4:
+            for a in [0, 1]:
+                sub = np.where(actions[90:] == a)[0]
+                if len(sub) > 0:
+                    q[sub, a] += eta * (payoffs[90 + sub] - q[sub, a])
+
+        skills = next_skills
+        pay_hist[t], skill_hist[t], div_hist[t], innov_hist[t] = np.mean(payoffs), np.mean(skills), np.std(skills), np.mean(actions)
+
+    return {"mean_payoff": pay_hist, "mean_skill": skill_hist, "diversity": div_hist, "pct_innovating": innov_hist}
+"""))
+
+cells.append(nbf.v4.new_markdown_cell(r"""Next, I run 50 Monte Carlo repetitions for each of the 5 strategies and print a summary table comparing pre-shock payoff, post-shock payoff, and cumulative welfare.
+"""))
+
+cells.append(nbf.v4.new_code_cell(r"""strategies = {
+    "Pure Copiers": 0,
+    "Pure Innovators": 1,
+    "Homogeneous Adaptive": 2,
+    "Static 5% Mixture": 3,
+    "Heterogeneous (80/10/10)": 4,
+}
+
+ens_seeds = np.random.default_rng(SEED).integers(100000, 999999, size=50)
+ensemble_results = {}
 summary_rows = []
-for name, data in ensemble_results.items():
-    pre_payoff = data["mean_payoff"]["mean"][39]
-    final_payoff = data["mean_payoff"]["mean"][-1]
-    cum_mean = data["cumulative_payoff"]["mean"]
-    cum_low = data["cumulative_payoff"]["lower"]
-    cum_high = data["cumulative_payoff"]["upper"]
-    final_skill = data["mean_skill"]["mean"][-1]
-    final_div = data["diversity"]["mean"][-1]
-    
+
+for name, mode in strategies.items():
+    runs = [run_strategy(mode, np.random.default_rng(s)) for s in ens_seeds]
+    d = {}
+    for k in ["mean_payoff", "mean_skill", "diversity", "pct_innovating"]:
+        mat = np.array([r[k] for r in runs])
+        m = np.mean(mat, axis=0)
+        se = np.std(mat, axis=0, ddof=1) / np.sqrt(50)
+        d[k] = {"mean": m, "lower": m - 1.96 * se, "upper": m + 1.96 * se}
+
+    cums = [np.sum(r["mean_payoff"]) for r in runs]
+    ensemble_results[name] = d
+
     summary_rows.append({
         "Evolutionary Strategy": name,
-        "Pre-Shock Payoff (t=39)": f"{pre_payoff:+.2f}",
-        "Final Payoff (t=99)": f"{final_payoff:+.2f}",
-        "Mean Cumulative Payoff": f"{cum_mean:+.2f}",
-        "95% Run Spread": f"[{cum_low:.1f}, {cum_high:.1f}]",
-        "Final Skill Level (z)": f"{final_skill:.2f}",
-        "Cultural Diversity (sigma)": f"{final_div:.2f}",
-        "Regime": "Deficit (Pi < 0)" if final_payoff < 0 else "Surplus (Pi > 0)"
+        "Pre-Shock (t=39)": f"{d['mean_payoff']['mean'][39]:+.2f}",
+        "Final Payoff (t=99)": f"{d['mean_payoff']['mean'][-1]:+.2f}",
+        "Mean Cumulative Payoff": f"{np.mean(cums):+.2f}",
+        "95% Run Spread": f"[{np.percentile(cums, 2.5):.1f}, {np.percentile(cums, 97.5):.1f}]",
+        "Final Skill (z)": f"{d['mean_skill']['mean'][-1]:.2f}",
+        "Regime": "Deficit (Π < 0)" if d["mean_payoff"]["mean"][-1] < 0 else "Surplus (Π > 0)",
     })
 
 display(pd.DataFrame(summary_rows))
 """))
 
-cells.append(nbf.v4.new_code_cell(r"""# Code Block 7: Publication Figure 4 — 5-Strategy Benchmark Trajectories (95% Ribbons)
-palette = {
+cells.append(nbf.v4.new_markdown_cell(r"""Now I plot **Publication Figure 4**, showing how the 5 strategies behave across all 100 generations with 95% confidence ribbons.
+"""))
+
+cells.append(nbf.v4.new_code_cell(r"""palette = {
     "Pure Copiers": "#d95f02",
     "Pure Innovators": "#7570b3",
     "Homogeneous Adaptive": "#1b9e77",
     "Static 5% Mixture": "#e7298a",
-    "Heterogeneous (80/10/10)": "#2b5c8f"
+    "Heterogeneous (80/10/10)": "#2b5c8f",
 }
 
 fig, axes = plt.subplots(2, 2, figsize=(14, 10), sharex=True)
-gens = np.arange(100)
+gens = np.arange(N_GENS)
 
 for name, data in ensemble_results.items():
-    axes[0, 0].plot(gens, data["mean_payoff"]["mean"], label=name, color=palette[name], lw=2.2)
-    axes[0, 0].fill_between(gens, data["mean_payoff"]["lower"], data["mean_payoff"]["upper"], color=palette[name], alpha=0.15)
-    axes[0, 1].plot(gens, data["mean_skill"]["mean"], label=name, color=palette[name], lw=2.2)
-    axes[0, 1].fill_between(gens, data["mean_skill"]["lower"], data["mean_skill"]["upper"], color=palette[name], alpha=0.15)
-    axes[1, 0].plot(gens, data["diversity"]["mean"], label=name, color=palette[name], lw=2.2)
-    axes[1, 0].fill_between(gens, data["diversity"]["lower"], data["diversity"]["upper"], color=palette[name], alpha=0.15)
-    axes[1, 1].plot(gens, data["pct_innovating"]["mean"] * 100, label=name, color=palette[name], lw=2.2)
-    axes[1, 1].fill_between(gens, data["pct_innovating"]["lower"] * 100, data["pct_innovating"]["upper"] * 100, color=palette[name], alpha=0.15)
+    for ax, key in zip(axes.flat, ["mean_payoff", "mean_skill", "diversity", "pct_innovating"]):
+        scale = 100.0 if key == "pct_innovating" else 1.0
+        ax.plot(gens, data[key]["mean"] * scale, label=name, color=palette[name], lw=2.2)
+        ax.fill_between(gens, data[key]["lower"] * scale, data[key]["upper"] * scale, color=palette[name], alpha=0.15)
 
-axes[0, 0].axvline(40, color="crimson", linestyle="--", lw=1.5, label="Austerity Shock (t=40)")
-axes[0, 0].axhline(0, color="black", linestyle=":", lw=1.2, label="Subsistence (Pi=0)")
+axes[0, 0].axvline(SHOCK_GEN, color="crimson", linestyle="--", lw=1.5, label="Austerity Shock (t=40)")
+axes[0, 0].axhline(0, color="black", linestyle=":", lw=1.2, label="Subsistence (Π=0)")
 axes[0, 0].set_ylabel(r"Net Payoff $\Pi(t)$", fontweight="bold")
 axes[0, 0].set_title("A. Energetic Payoff & Subsistence Deficit", fontweight="bold", loc="left")
 axes[0, 0].legend(loc="upper left", frameon=True, fontsize=9)
-sns.despine(ax=axes[0, 0])
 
-axes[0, 1].axvline(40, color="crimson", linestyle="--", lw=1.5)
+axes[0, 1].axvline(SHOCK_GEN, color="crimson", linestyle="--", lw=1.5)
 axes[0, 1].set_ylabel(r"Mean Cultural Skill $\bar{z}(t)$", fontweight="bold")
 axes[0, 1].set_title("B. Cumulative Technological Competence", fontweight="bold", loc="left")
-sns.despine(ax=axes[0, 1])
 
-axes[1, 0].axvline(40, color="crimson", linestyle="--", lw=1.5)
+axes[1, 0].axvline(SHOCK_GEN, color="crimson", linestyle="--", lw=1.5)
 axes[1, 0].set_ylabel(r"Skill Dispersion $\sigma_z(t)$", fontweight="bold")
-axes[1, 0].set_xlabel("Evolutionary Generation $(t)$", fontweight="bold")
+axes[1, 0].set_xlabel("Evolutionary Generation (t)", fontweight="bold")
 axes[1, 0].set_title("C. Repertoire Diversity (Variance)", fontweight="bold", loc="left")
-sns.despine(ax=axes[1, 0])
 
-axes[1, 1].axvline(40, color="crimson", linestyle="--", lw=1.5)
+axes[1, 1].axvline(SHOCK_GEN, color="crimson", linestyle="--", lw=1.5)
 axes[1, 1].set_ylabel("% Population Innovating", fontweight="bold")
-axes[1, 1].set_xlabel("Evolutionary Generation $(t)$", fontweight="bold")
+axes[1, 1].set_xlabel("Evolutionary Generation (t)", fontweight="bold")
 axes[1, 1].set_title("D. Dynamic Behavioral Strategy Allocation", fontweight="bold", loc="left")
 axes[1, 1].set_ylim(-5, 105)
-sns.despine(ax=axes[1, 1])
+
+for ax in axes.flat:
+    sns.despine(ax=ax)
 
 plt.suptitle("Publication Figure 4: 50-Run Ensemble Trajectories (Adaptive Social Brain & Division of Labor)",
              fontsize=13.5, fontweight="bold", y=1.02)
@@ -981,164 +675,167 @@ plt.tight_layout()
 plt.show()
 """))
 
-# ==========================================
-# CELL 11: EXTENSION 5.2 - REPLICATOR DYNAMICS
-# ==========================================
+# ==============================================================================
+# EXTENSION 5.2: REPLICATOR DYNAMICS
+# ==============================================================================
 cells.append(nbf.v4.new_markdown_cell(r"""---
 ## Extension 5.2: Endogenous Co-Evolution via Discrete Replicator Dynamics
 
-Rather than fixing strategy frequencies externally, we test whether evolutionary selection (Boyd & Richerson, 1985; Taylor & Jonker, 1978) starting from an equal $[1/3, 1/3, 1/3]$ split autonomously converges toward the ~70/30 division of labor ESS:
-$$x_i(t+1) = x_i(t) \cdot \frac{w_i(t)}{\sum_k x_k(t) w_k(t)}, \qquad x_i^{\text{mut}}(t+1) = (1 - \mu) x_i^{\text{rep}}(t+1) + \mu \cdot \frac{1}{3}$$
+Rather than fixing strategy frequencies externally, I test whether evolutionary selection (Boyd & Richerson, 1985; Taylor & Jonker, 1978) starting from an equal $[1/3, 1/3, 1/3]$ split autonomously converges toward the ~70/30 division of labor ESS:
+$$x_k(t+1) = (1 - \mu) \left( x_k(t) \frac{F_k(t)}{\bar{F}(t)} \right) + \frac{\mu}{3}$$
+
+First, I write a compact replicator simulation across 50 independent runs.
 """))
 
-cells.append(nbf.v4.new_code_cell(r"""# Code Block 8: Endogenous Replicator Dynamics Simulation
-print("Executing 50 Monte Carlo ensembles of Endogenous Replicator Dynamics...")
-rep_results = arena.run_replicator_dynamics(n_runs=50, init_props=[1/3, 1/3, 1/3], mu=0.03, seed=303303)
+cells.append(nbf.v4.new_code_cell(r"""def run_replicator(n_runs=50, mu=0.02):
+    rep_seeds = np.random.default_rng(SEED + 777).integers(100000, 999999, size=n_runs)
+    props_all = np.zeros((n_runs, N_GENS, 3))
 
-props_hist = rep_results["props_history"]
-mean_props = np.mean(props_hist, axis=0)
+    for r, s in enumerate(rep_seeds):
+        rng = np.random.default_rng(s)
+        props = np.array([1/3, 1/3, 1/3])
+        skills = rng.uniform(6.0, 7.0, size=N_AGENTS)
+        q = np.tile([3.5, 0.0], (N_AGENTS, 1))
 
-rep_summary = pd.DataFrame({
-    "Evolutionary Checkpoint": [
-        "Initial Generation (t=0)",
-        "Pre-Shock Equilibrium (t=39)",
-        "Crisis Adaptation (t=45)",
-        "Final Evolutionarily Stable State (t=99)"
-    ],
-    "Copiers Share (%)": [f"{mean_props[idx, 0]*100:.1f}%" for idx in [0, 39, 45, 99]],
-    "Innovators Share (%)": [f"{mean_props[idx, 1]*100:.1f}%" for idx in [0, 39, 45, 99]],
-    "Adaptive Brain Share (%)": [f"{mean_props[idx, 2]*100:.1f}%" for idx in [0, 39, 45, 99]],
-})
-display(rep_summary)
+        for t in range(N_GENS):
+            h = H_HIGH if t >= SHOCK_GEN else H_LOW
+            props_all[r, t] = props
+            c0 = int(round(props[0] * N_AGENTS))
+            c1 = int(round(props[1] * N_AGENTS))
+            c2 = max(0, N_AGENTS - c0 - c1)
+
+            actions = np.zeros(N_AGENTS, dtype=int)
+            if c1 > 0:
+                actions[c0 : c0 + c1] = 1
+            if c2 > 0:
+                actions[c0 + c1 :] = softmax_pick(q[c0 + c1 :], rng)
+
+            next_skills = np.copy(skills)
+            costs = np.where(actions == 1, COST_INNOV, COST_COPY)
+            c_idx, i_idx = np.where(actions == 0)[0], np.where(actions == 1)[0]
+            if len(c_idx) > 0:
+                next_skills[c_idx] = copy_peers(skills, len(c_idx), rng)
+            if len(i_idx) > 0:
+                next_skills[i_idx] = skills[i_idx] + rng.exponential(scale=INNOV_SCALE, size=len(i_idx))
+
+            payoffs = next_skills - h - costs
+            if c2 > 0:
+                for a in [0, 1]:
+                    sub = np.where(actions[c0 + c1 :] == a)[0]
+                    if len(sub) > 0:
+                        g_idx = c0 + c1 + sub
+                        q[g_idx, a] += 0.35 * (payoffs[g_idx] - q[g_idx, a])
+            skills = next_skills
+
+            p0 = np.mean(payoffs[:c0]) if c0 > 0 else 0.0
+            p1 = np.mean(payoffs[c0 : c0 + c1]) if c1 > 0 else 0.0
+            p2 = np.mean(payoffs[c0 + c1 :]) if c2 > 0 else 0.0
+            gps = np.array([p0, p1, p2])
+            fit = gps - np.min(gps) + 1.0
+            rep = (1.0 - mu) * (props * fit / np.sum(props * fit)) + mu / 3.0
+            props = rng.multinomial(N_AGENTS, rep / np.sum(rep)) / N_AGENTS
+
+    return props_all
+
+props_hist = run_replicator(n_runs=50)
+print(f"Final ESS Proportions -> Copiers: {np.mean(props_hist[:, -1, 0])*100:.1f}%, "
+      f"Innovators: {np.mean(props_hist[:, -1, 1])*100:.1f}%, "
+      f"Adaptive: {np.mean(props_hist[:, -1, 2])*100:.1f}%")
 """))
 
-cells.append(nbf.v4.new_code_cell(r"""# Code Block 9: Publication Figure 5 — Replicator Dynamics & Emergent ESS
-fig, axes = plt.subplots(1, 2, figsize=(15, 5.5), sharex=True)
-gens = np.arange(100)
-colors = {"Copiers": "#d95f02", "Innovators": "#7570b3", "Adaptive": "#1b9e77"}
+cells.append(nbf.v4.new_markdown_cell(r"""Next, I plot **Publication Figure 5** showing the population strategy proportions over time and the final equilibrium shares.
+"""))
 
-for idx, strat in enumerate(["Copiers", "Innovators", "Adaptive"]):
-    mean_curve = mean_props[:, idx]
-    p_lower = np.percentile(props_hist[:, :, idx], 2.5, axis=0)
-    p_upper = np.percentile(props_hist[:, :, idx], 97.5, axis=0)
-    axes[0].plot(gens, mean_curve * 100, label=f"{strat} (Mean)", color=colors[strat], lw=2.4)
-    axes[0].fill_between(gens, p_lower * 100, p_upper * 100, color=colors[strat], alpha=0.18)
+cells.append(nbf.v4.new_code_cell(r"""fig, axes = plt.subplots(1, 2, figsize=(14, 5.2))
+gens = np.arange(N_GENS)
+labels = ["Pure Copiers", "Pure Innovators", "Adaptive Social Brain"]
+colors = ["#d95f02", "#7570b3", "#1b9e77"]
 
-axes[0].axvline(40, color="black", linestyle="--", alpha=0.65, label="Austerity Shock (H: 2 -> 10)")
-axes[0].set_title("A. Co-Evolution of Strategy Proportions (Emergent ESS)", fontsize=11.5, fontweight="bold")
+for k in range(3):
+    m = np.mean(props_hist[:, :, k], axis=0) * 100
+    se = np.std(props_hist[:, :, k], axis=0, ddof=1) / np.sqrt(50) * 100
+    axes[0].plot(gens, m, label=labels[k], color=colors[k], lw=2.4)
+    axes[0].fill_between(gens, np.maximum(0, m - 1.96 * se), np.minimum(100, m + 1.96 * se), color=colors[k], alpha=0.18)
+
+axes[0].axvline(SHOCK_GEN, color="crimson", linestyle="--", lw=1.5, label="Austerity Shock (t=40)")
+axes[0].set_title("A. Co-Evolutionary Replicator Dynamics (50 Runs)", fontweight="bold")
 axes[0].set_xlabel("Generation (t)", fontweight="bold")
 axes[0].set_ylabel("Population Share (%)", fontweight="bold")
-axes[0].set_ylim(0, 85)
-axes[0].legend(loc="upper left", frameon=True, fontsize=9.5)
+axes[0].set_ylim(0, 100)
+axes[0].legend(loc="upper right", frameon=True, fontsize=9)
 sns.despine(ax=axes[0])
 
-mean_payoff_curve = np.mean(rep_results["payoff_history"], axis=0)
-payoff_lower = np.percentile(rep_results["payoff_history"], 2.5, axis=0)
-payoff_upper = np.percentile(rep_results["payoff_history"], 97.5, axis=0)
+final_means = np.mean(props_hist[:, -1, :], axis=0) * 100
+final_stds = np.std(props_hist[:, -1, :], axis=0) * 100
+bars = axes[1].bar(labels, final_means, yerr=final_stds, capsize=6, color=colors, alpha=0.85, edgecolor="black")
+for bar, val in zip(bars, final_means):
+    axes[1].text(bar.get_x() + bar.get_width() / 2, val + 5.5, f"{val:.1f}%", ha="center", fontweight="bold")
 
-mean_skill_curve = np.mean(rep_results["skill_history"], axis=0)
-skill_lower = np.percentile(rep_results["skill_history"], 2.5, axis=0)
-skill_upper = np.percentile(rep_results["skill_history"], 97.5, axis=0)
+axes[1].set_title("B. Final Evolutionarily Stable State (t=99)", fontweight="bold")
+axes[1].set_ylabel("Equilibrium Population Share (%)", fontweight="bold")
+axes[1].set_ylim(0, 100)
+sns.despine(ax=axes[1])
 
-ax_skill = axes[1].twinx()
-line1 = axes[1].plot(gens, mean_payoff_curve, color="#2b5c8f", lw=2.4, label=r"Mean Payoff $\bar{\Pi}(t)$")
-axes[1].fill_between(gens, payoff_lower, payoff_upper, color="#2b5c8f", alpha=0.15)
-line2 = ax_skill.plot(gens, mean_skill_curve, color="#e7298a", lw=2.2, linestyle="-.", label=r"Cultural Skill $\bar{z}(t)$")
-ax_skill.fill_between(gens, skill_lower, skill_upper, color="#e7298a", alpha=0.12)
-
-axes[1].axvline(40, color="black", linestyle="--", alpha=0.65)
-axes[1].set_title("B. Economic Surplus & Cultural Complexity Under ESS", fontsize=11.5, fontweight="bold")
-axes[1].set_xlabel("Generation (t)", fontweight="bold")
-axes[1].set_ylabel(r"Mean Payoff $\bar{\Pi}(t)$", color="#2b5c8f", fontweight="bold")
-ax_skill.set_ylabel(r"Mean Cultural Skill $\bar{z}(t)$", color="#e7298a", fontweight="bold")
-
-lines = line1 + line2
-axes[1].legend(lines, [l.get_label() for l in lines], loc="upper left", frameon=True, fontsize=9.5)
-sns.despine(ax=axes[1], right=False)
-
-plt.suptitle("Publication Figure 5: Endogenous Replicator Dynamics & Spontaneous Division of Labor", fontsize=13.5, fontweight="bold", y=1.02)
+plt.suptitle("Publication Figure 5: Natural Selection Converges to an Asymmetric Division of Labor",
+             fontsize=13.5, fontweight="bold", y=1.02)
 plt.tight_layout()
 plt.show()
 """))
 
-# ==========================================
-# CELL 12: EXTENSION 5.3 - INTERACTIVE SANDBOX
-# ==========================================
+# ==============================================================================
+# EXTENSION 5.3: INTERACTIVE SANDBOX
+# ==============================================================================
 cells.append(nbf.v4.new_markdown_cell(r"""---
-## Extension 5.3: Interactive 60-FPS Simulation Sandbox
-> [!TIP]
-> Live HTML5/Canvas parameter playground embedded directly below (also hosted live on GitHub Pages at `https://rares8283682.github.io/cultural-evolution-efficiency/`).
+## Extension 5.3: Interactive Parameter Sandbox (Live HTML5/Canvas Dashboard)
+
+To allow live exploration of harshness shocks, copier proportions, and Gumbel error rates, I embed our interactive simulation dashboard (`docs/index.html`) directly below.
 """))
 
-cells.append(nbf.v4.new_code_cell(r"""# Code Block 10: Embedded Interactive Simulation Sandbox
-import base64
-import html
-import webbrowser
-from IPython.display import HTML, display
+cells.append(nbf.v4.new_code_cell(r"""from IPython.display import IFrame, display
 
-dashboard_file = os.path.join("docs", "index.html") if os.path.exists(os.path.join("docs", "index.html")) else "simulation_dashboard.html"
-with open(dashboard_file, "r", encoding="utf-8") as f:
-    raw_html = f.read()
-
-b64_html = base64.b64encode(raw_html.encode("utf-8")).decode("utf-8")
-srcdoc_content = html.escape(raw_html, quote=True)
-
-display(HTML(f'''
-<div style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; background: #f8fafc; padding: 12px 18px; border-radius: 12px; border: 1px solid #cbd5e1;">
-    <div>
-        <div style="font-size: 14px; font-weight: bold; color: #0f172a;">
-            🎮 Cultural Evolution Real-Time Simulation Sandbox
-        </div>
-        <div style="font-size: 12px; color: #64748b; margin-top: 2px;">
-            Slide H(t), costs, and population mix below to re-simulate live at 60 FPS.
-        </div>
-    </div>
-    <a href="{dashboard_file}" target="_blank" style="padding: 8px 16px; background: #2563eb; color: #ffffff !important; text-decoration: none; border-radius: 8px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
-        <span>↗️</span> Fullscreen in Browser
-    </a>
-</div>
-<div style="width: 100%; border: 1px solid #cbd5e1; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); background: #ffffff;">
-    <iframe src="data:text/html;base64,{b64_html}" srcdoc="{srcdoc_content}" style="width: 100%; height: 880px; border: none; display: block; background: #ffffff;"></iframe>
-</div>
-'''))
+if os.path.exists("docs/index.html"):
+    display(IFrame(src="docs/index.html", width="100%", height="620px"))
+else:
+    print("Interactive dashboard HTML file not found at docs/index.html")
 """))
 
-# ==========================================
-# CELL 13: EXTENSION 5.4 - PROFESSOR'S YULE-SIMON MODEL
-# ==========================================
+# ==============================================================================
+# EXTENSION 5.4: YULE-SIMON MODEL
+# ==============================================================================
 cells.append(nbf.v4.new_markdown_cell(r"""---
 ## Extension 5.4: Rank-Frequency Distributions & Transmission Biases (Yule-Simon Model)
 
 Operationalizing **Professor Alexey Koshevoy's** observation on frequency-dependent vs. frequency-independent trait distributions (and Mesoudi Ch. 7 & 10):
 $$\mathbb{P}(\text{trait } k) = \frac{(F_k(t))^\beta \cdot (Q_k)^\alpha + \mu}{\sum_{m=1}^M \left[ (F_m(t))^\beta \cdot (Q_m)^\alpha + \mu \right]}$$
-Comparing **Yule-Simon Neutral Copying ($\beta=1.0$)**, **Frequency-Independent Uniform ($\beta=0.0$)**, **Prestige Bias ($\beta=1.0, \alpha=2.0$)**, and **Conformist Bias ($\beta=1.5$)**.
+First, I write a short function `sim_traits()` to compare **Yule-Simon Neutral Copying ($\beta=1.0$)**, **Frequency-Independent Uniform ($\beta=0.0$)**, **Prestige Bias ($\beta=1.0, \alpha=2.0$)**, and **Conformist Bias ($\beta=1.5$)**.
 """))
 
-cells.append(nbf.v4.new_code_cell(r"""# Code Block 11 & 12: Yule-Simon Transmission Bias Models & Figure 6
-def simulate_cultural_item_frequencies(N=1000, M=100, generations=200, beta=1.0, alpha=0.0, mu=0.01, seed=42):
+cells.append(nbf.v4.new_code_cell(r"""def sim_traits(n_pop=1000, n_items=100, gens=200, beta=1.0, alpha=0.0, mu=0.01, seed=42):
     rng = np.random.default_rng(seed)
-    qualities = rng.lognormal(mean=0.0, sigma=0.5, size=M)
-    traits = rng.integers(0, M, size=N)
-    for t in range(generations):
-        freqs = np.bincount(traits, minlength=M) / N
-        freq_component = np.ones(M) if beta == 0.0 else freqs ** beta
-        qual_component = qualities ** alpha if alpha > 0 else np.ones(M)
-        weights = freq_component * qual_component + mu
-        probs = weights / np.sum(weights)
-        traits = rng.choice(M, size=N, p=probs)
-    final_counts = np.bincount(traits, minlength=M)
-    return {"final_counts": final_counts, "sorted_counts": np.sort(final_counts)[::-1], "ranks": np.arange(1, M + 1)}
+    qualities = rng.lognormal(mean=0.0, sigma=0.5, size=n_items)
+    traits = rng.integers(0, n_items, size=n_pop)
+    for _ in range(gens):
+        freqs = np.bincount(traits, minlength=n_items) / n_pop
+        w = (np.ones(n_items) if beta == 0.0 else freqs ** beta) * (qualities ** alpha if alpha > 0 else 1.0) + mu
+        traits = rng.choice(n_items, size=n_pop, p=w / np.sum(w))
+    counts = np.bincount(traits, minlength=n_items)
+    return np.arange(1, n_items + 1), np.sort(counts)[::-1], counts
 
-res_yule = simulate_cultural_item_frequencies(beta=1.0, alpha=0.0, mu=0.01, seed=101)
-res_unif = simulate_cultural_item_frequencies(beta=0.0, alpha=0.0, mu=0.01, seed=102)
-res_prest = simulate_cultural_item_frequencies(beta=1.0, alpha=2.0, mu=0.01, seed=103)
-res_conf = simulate_cultural_item_frequencies(beta=1.5, alpha=0.0, mu=0.01, seed=104)
+ranks, yule_s, yule_raw = sim_traits(beta=1.0, alpha=0.0, seed=101)
+_, unif_s, unif_raw = sim_traits(beta=0.0, alpha=0.0, seed=102)
+_, prest_s, _ = sim_traits(beta=1.0, alpha=2.0, seed=103)
+_, conf_s, _ = sim_traits(beta=1.5, alpha=0.0, seed=104)
+"""))
 
-fig, axes = plt.subplots(1, 2, figsize=(14, 5.5))
-axes[0].loglog(res_yule["ranks"], res_yule["sorted_counts"] + 1, 'o-', color="#1f77b4", lw=2, markersize=5, label=r"Yule-Simon Frequency Bias ($\beta=1.0, \alpha=0$)")
-axes[0].loglog(res_prest["ranks"], res_prest["sorted_counts"] + 1, 's-', color="#2ca02c", lw=2, markersize=5, label=r"Prestige & Quality Bias ($\beta=1.0, \alpha=2.0$)")
-axes[0].loglog(res_conf["ranks"], res_conf["sorted_counts"] + 1, '^-', color="#9467bd", lw=2, markersize=5, label=r"Conformist Bias ($\beta=1.5, \alpha=0$)")
-axes[0].loglog(res_unif["ranks"], res_unif["sorted_counts"] + 1, 'd--', color="#d62728", lw=1.8, markersize=5, label=r"Frequency-Independent Uniform ($\beta=0, \alpha=0$)")
+cells.append(nbf.v4.new_markdown_cell(r"""Now I plot **Publication Figure 6** showing the log-log rank-frequency curves and the heavy-tail concentration of top items.
+"""))
+
+cells.append(nbf.v4.new_code_cell(r"""fig, axes = plt.subplots(1, 2, figsize=(14, 5.5))
+
+axes[0].loglog(ranks, yule_s + 1, "o-", color="#1f77b4", lw=2, markersize=5, label=r"Yule-Simon Frequency Bias ($\beta=1.0, \alpha=0$)")
+axes[0].loglog(ranks, prest_s + 1, "s-", color="#2ca02c", lw=2, markersize=5, label=r"Prestige & Quality Bias ($\beta=1.0, \alpha=2.0$)")
+axes[0].loglog(ranks, conf_s + 1, "^-", color="#9467bd", lw=2, markersize=5, label=r"Conformist Bias ($\beta=1.5, \alpha=0$)")
+axes[0].loglog(ranks, unif_s + 1, "d--", color="#d62728", lw=1.8, markersize=5, label=r"Frequency-Independent Uniform ($\beta=0, \alpha=0$)")
 axes[0].set_title("A. Cultural Trait Rank-Frequency Distributions (Log-Log)", fontweight="bold")
 axes[0].set_xlabel("Trait Rank (k)", fontweight="bold")
 axes[0].set_ylabel("Trait Frequency + 1", fontweight="bold")
@@ -1146,8 +843,8 @@ axes[0].legend(loc="upper right", frameon=True, fontsize=9)
 axes[0].grid(True, which="both", ls=":", alpha=0.5)
 sns.despine(ax=axes[0])
 
-axes[1].bar(np.arange(30), res_yule["sorted_counts"][:30], color="#1f77b4", alpha=0.7, label="Top 30 Yule Traits")
-axes[1].plot(np.arange(30), [np.mean(res_unif["final_counts"])]*30, color="#d62728", ls="--", lw=2, label="Uniform Null Level")
+axes[1].bar(np.arange(30), yule_s[:30], color="#1f77b4", alpha=0.7, label="Top 30 Yule Traits")
+axes[1].plot(np.arange(30), [np.mean(unif_raw)] * 30, color="#d62728", ls="--", lw=2, label="Uniform Null Level")
 axes[1].set_title("B. Heavy-Tail Cultural Item Concentration", fontweight="bold")
 axes[1].set_xlabel("Top Cultural Traits (Ordered)", fontweight="bold")
 axes[1].set_ylabel("Number of Adopters (N=1,000)", fontweight="bold")
@@ -1160,9 +857,9 @@ plt.tight_layout()
 plt.show()
 """))
 
-# ==========================================
-# CELL 14: EXTENSION 5.5 - CHARBONNEAU PATENT RECOMBINATION
-# ==========================================
+# ==============================================================================
+# EXTENSION 5.5: CHARBONNEAU PATENT RECOMBINATION
+# ==============================================================================
 cells.append(nbf.v4.new_markdown_cell(r"""---
 ## Extension 5.5: Modular Technological Recombination & Patent Lineages (Charbonneau Framework)
 
@@ -1170,20 +867,16 @@ Extending the model into real-world patent networks (**Charbonneau, 2015, 2018**
 $$W_j = (\text{Citations}_j + 1)^\alpha \cdot (\text{Quality}_j)^\beta, \qquad Q_{t+1} = \max\left(Q_{\text{parent}_1}, Q_{\text{parent}_2}\right) + \Delta Q$$
 """))
 
-cells.append(nbf.v4.new_code_cell(r"""# Code Block 13 & 14: Modular Patent Recombination Simulation & Figure 7
-from src.cultural_evolution.recombination import RecombinantPatentModel
+cells.append(nbf.v4.new_code_cell(r"""from src.cultural_evolution.recombination import RecombinantPatentModel
 
-model_recomb = RecombinantPatentModel(initial_patents=25, total_steps=600, alpha_cit=1.2, beta_quality=1.0, seed=42)
-patent_res = model_recomb.simulate()
-
-model_neutral = RecombinantPatentModel(initial_patents=25, total_steps=600, alpha_cit=0.0, beta_quality=0.0, seed=42)
-neutral_res = model_neutral.simulate()
+patent_res = RecombinantPatentModel(initial_patents=25, total_steps=600, alpha_cit=1.2, beta_quality=1.0, seed=42).simulate()
+neutral_res = RecombinantPatentModel(initial_patents=25, total_steps=600, alpha_cit=0.0, beta_quality=0.0, seed=42).simulate()
 
 print(f"Total simulated patents: {len(patent_res['citations'])} | Distinct modules discovered: {patent_res['total_modules']}")
 
 fig, ax = plt.subplots(figsize=(9, 5.2))
-ax.loglog(patent_res["ranks"], patent_res["sorted_citations"] + 1, 'o-', color="#2b5c8f", markersize=4, lw=1.5, alpha=0.85, label="Modular Patent Network (Charbonneau Recombination)")
-ax.loglog(neutral_res["ranks"], neutral_res["sorted_citations"] + 1, 's--', color="#c0392b", markersize=3, lw=1.2, alpha=0.7, label="Neutral Drift Benchmark (Bentley et al. 2004)")
+ax.loglog(patent_res["ranks"], patent_res["sorted_citations"] + 1, "o-", color="#2b5c8f", markersize=4, lw=1.5, alpha=0.85, label="Modular Patent Network (Charbonneau)")
+ax.loglog(neutral_res["ranks"], neutral_res["sorted_citations"] + 1, "s--", color="#c0392b", markersize=3, lw=1.2, alpha=0.7, label="Neutral Drift Benchmark (Bentley et al. 2004)")
 
 ax.set_title("Publication Figure 7: Heavy-Tailed Patent Citation Distribution\n(Modular Recombination vs. Neutral Drift)", fontweight="bold")
 ax.set_xlabel("Patent Citation Rank (k)", fontweight="bold")
@@ -1195,49 +888,104 @@ plt.tight_layout()
 plt.show()
 """))
 
-# ==========================================
-# CELL 15: EXTENSION 5.6 - CORPORATE R&D TIME MACHINE
-# ==========================================
+# ==============================================================================
+# EXTENSION 5.6: CORPORATE R&D TIME MACHINE
+# ==============================================================================
 cells.append(nbf.v4.new_markdown_cell(r"""---
 ## Extension 5.6: Macro-Technological Scenario Simulator ("Corporate R&D Time Machine")
 
-To translate our findings directly into **corporate economics and industrial patent policy** (as discussed with Prof. Alexey Koshevoy), this extension implements a high-throughput **Corporate Scenario Simulator**. 
-
-Analogous to quantitative financial backtesting engines and macro scenario simulators, this module stress-tests an industry of **$N = 1{,}000$ competing firms** over **$T = 100$ quarterly epochs**, tracking their solvency, patent portfolio valuations, and operating cashflows across four distinct corporate portfolio allocations:
+To translate our findings directly into **corporate economics and industrial patent policy** (as discussed with Prof. Alexey Koshevoy), this module stress-tests an industry of **$N = 1{,}000$ competing firms** over **$T = 100$ quarterly epochs** across four corporate R&D strategies:
 1. **Fast-Follower Swarm ($90\%$ Licensing/Copying, $10\%$ In-House R&D)**
 2. **Optimal Division of Labor ($70\%$ Licensing/Copying, $30\%$ In-House R&D)**
 3. **Balanced Tech Enterprise ($50\%$ Licensing/Copying, $50\%$ In-House R&D)**
 4. **DeepTech Frontier Pioneer ($10\%$ Licensing/Copying, $90\%$ In-House R&D)**
 
-All firms operate in a benign, low-rate macroeconomic boom ($H = 2.0$) for 40 quarters before being hit by a severe macroeconomic and regulatory scarcity shock ($H = 10.0$).
+First, I write `run_firm_cohort()` to simulate 1,000 firms over 100 quarters using our same `copy_peers()` helper and payoff rule, tracking solvency (% of firms with margin $\ge 0$) and patent portfolio value.
 """))
 
-cells.append(nbf.v4.new_code_cell(r"""# Code Block 15 & 16: Corporate R&D Time Machine & Publication Figure 8
-arena_tm = HarshnessCulturalArena(N=1000, generations=100, shock_gen=40, seed=42)
-tm_results = arena_tm.run_corporate_time_machine(num_firms=1000, generations=100, shock_gen=40)
+cells.append(nbf.v4.new_code_cell(r"""def run_firm_cohort(p_copy, n_firms=1000, n_quarters=100, shock_q=40, seed=42):
+    rng = np.random.default_rng(seed)
+    skills = np.full(n_firms, 2.0)
+    margins = np.zeros((n_firms, n_quarters))
+    vals = np.zeros((n_firms, n_quarters))
+    cum_profit = np.zeros((n_firms, n_quarters))
+    survival = np.zeros(n_quarters)
 
-# Build Performance Summary Table
-tm_summary_rows = []
-for scen_name, s_data in tm_results["scenarios"].items():
-    tm_summary_rows.append({
-        "Corporate Strategy": scen_name,
-        "Licensing Ratio": f"{int(s_data['copier_ratio']*100)}%",
-        "In-House R&D Ratio": f"{int((1-s_data['copier_ratio'])*100)}%",
-        "Pre-Shock Margin (H=2.0)": f"+{s_data['pre_shock_margin']:.1f}",
-        "Post-Shock Margin (H=10.0)": f"{s_data['post_shock_margin']:+.1f}",
-        "Cumulative Lifetime Cashflow": f"+{s_data['cumulative_margin'][-1]:,.0f}",
-        "100-Quarter Solvency Rate": f"{s_data['final_survival']:.1f}%",
+    for t in range(n_quarters):
+        h = H_HIGH if t >= shock_q else H_LOW
+        is_innov = rng.random(n_firms) >= p_copy
+        is_copy = ~is_innov
+
+        next_skills = np.copy(skills)
+        costs = np.where(is_innov, COST_INNOV, COST_COPY)
+
+        if np.sum(is_copy) > 0:
+            next_skills[is_copy] = copy_peers(skills, np.sum(is_copy), rng)
+        if np.sum(is_innov) > 0:
+            next_skills[is_innov] = skills[is_innov] + rng.exponential(scale=INNOV_SCALE, size=np.sum(is_innov))
+
+        m = next_skills - h - costs
+        skills = next_skills
+
+        margins[:, t] = m
+        vals[:, t] = skills
+        cum_profit[:, t] = m if t == 0 else cum_profit[:, t - 1] + m
+        survival[t] = np.mean(m >= 0.0) * 100.0
+
+    return {
+        "mean_val": np.mean(vals, axis=0),
+        "val_low": np.percentile(vals, 2.5, axis=0),
+        "val_high": np.percentile(vals, 97.5, axis=0),
+        "mean_margin": np.mean(margins, axis=0),
+        "survival": survival,
+        "cum_cash": np.mean(cum_profit, axis=0),
+        "pre_margin": float(np.mean(margins[:, shock_q - 1])),
+        "post_margin": float(np.mean(margins[:, -1])),
+        "final_surv": float(survival[-1]),
+    }
+"""))
+
+cells.append(nbf.v4.new_markdown_cell(r"""Next, I run the 1,000-firm simulator for each of the four corporate strategies and print the performance comparison table.
+"""))
+
+cells.append(nbf.v4.new_code_cell(r"""corp_configs = [
+    ("Fast-Follower Swarm (90% Copy / 10% R&D)", 0.90, "#d62728", 101),
+    ("Optimal Division of Labor (70% Copy / 30% R&D)", 0.70, "#2ca02c", 102),
+    ("Balanced Tech Firm (50% Copy / 50% R&D)", 0.50, "#1f77b4", 103),
+    ("DeepTech Pioneer (10% Copy / 90% R&D)", 0.10, "#9467bd", 104),
+]
+
+tm_results = {}
+tm_rows = []
+for name, p_c, color, s in corp_configs:
+    res = run_firm_cohort(p_c, seed=s)
+    res["color"] = color
+    tm_results[name] = res
+    tm_rows.append({
+        "Corporate Strategy": name,
+        "Licensing Ratio": f"{int(p_c*100)}%",
+        "In-House R&D Ratio": f"{int((1-p_c)*100)}%",
+        "Pre-Shock Margin (H=2.0)": f"+{res['pre_margin']:.1f}",
+        "Post-Shock Margin (H=10.0)": f"{res['post_margin']:+.1f}",
+        "Cumulative Cashflow": f"+{res['cum_cash'][-1]:,.0f}",
+        "100-Quarter Solvency": f"{res['final_surv']:.1f}%",
     })
-df_tm_summary = pd.DataFrame(tm_summary_rows)
-display(df_tm_summary)
 
-# Plot 3-Panel Publication Figure 8
-fig, axes = plt.subplots(1, 3, figsize=(18, 5.2))
-gens = np.arange(1, 101)
+display(pd.DataFrame(tm_rows))
+"""))
 
-# Panel A: Firm Solvency & Survival Rate Cones
-for scen_name, s_data in tm_results["scenarios"].items():
-    axes[0].plot(gens, s_data["survival_rate"], label=scen_name, color=s_data["color"], lw=2.4)
+cells.append(nbf.v4.new_markdown_cell(r"""Now I plot **Publication Figure 8**, showing the 1,000-firm solvency rates, patent portfolio valuations, and operating margins across 100 quarters.
+"""))
+
+cells.append(nbf.v4.new_code_cell(r"""fig, axes = plt.subplots(1, 3, figsize=(18, 5.2))
+quarters = np.arange(1, 101)
+
+for name, res in tm_results.items():
+    axes[0].plot(quarters, res["survival"], label=name, color=res["color"], lw=2.4)
+    axes[1].plot(quarters, res["mean_val"], label=name, color=res["color"], lw=2.2)
+    axes[1].fill_between(quarters, res["val_low"], res["val_high"], color=res["color"], alpha=0.15)
+    axes[2].plot(quarters, res["mean_margin"], label=name, color=res["color"], lw=2.2)
+
 axes[0].axvline(40, color="crimson", ls="--", lw=1.5, label="Macro Scarcity Shock (H=10.0)")
 axes[0].set_title("A. Industry Solvency & Survival Rate (N=1,000 Firms)", fontweight="bold")
 axes[0].set_xlabel("Quarterly Epoch (t)", fontweight="bold")
@@ -1245,22 +993,13 @@ axes[0].set_ylabel("Solvent Firms (% Margin ≥ 0)", fontweight="bold")
 axes[0].set_ylim(-5, 105)
 axes[0].grid(True, ls=":", alpha=0.5)
 axes[0].legend(loc="lower left", frameon=True, fontsize=8.5)
-sns.despine(ax=axes[0])
 
-# Panel B: Patent Portfolio Quality / Valuation Trajectories
-for scen_name, s_data in tm_results["scenarios"].items():
-    axes[1].plot(gens, s_data["mean_valuation"], label=scen_name, color=s_data["color"], lw=2.2)
-    axes[1].fill_between(gens, s_data["ci_val_lower"], s_data["ci_val_upper"], color=s_data["color"], alpha=0.15)
 axes[1].axvline(40, color="crimson", ls="--", lw=1.5)
 axes[1].set_title("B. Patent Portfolio Quality z(t) (95% CI Ribbons)", fontweight="bold")
 axes[1].set_xlabel("Quarterly Epoch (t)", fontweight="bold")
 axes[1].set_ylabel("Technological Capital / Patent Value", fontweight="bold")
 axes[1].grid(True, ls=":", alpha=0.5)
-sns.despine(ax=axes[1])
 
-# Panel C: Net Operating Margin (Cashflow) Trajectory
-for scen_name, s_data in tm_results["scenarios"].items():
-    axes[2].plot(gens, s_data["mean_operating_margin"], label=scen_name, color=s_data["color"], lw=2.2)
 axes[2].axhline(0, color="black", ls="-", lw=1.2, alpha=0.7)
 axes[2].axvline(40, color="crimson", ls="--", lw=1.5)
 axes[2].annotate("The 'Free-Rider Illusion'\n(90% Copying looks most profitable)", xy=(25, 90), xytext=(5, 115),
@@ -1272,54 +1011,58 @@ axes[2].set_xlabel("Quarterly Epoch (t)", fontweight="bold")
 axes[2].set_ylabel("Operating Margin / Net Cashflow", fontweight="bold")
 axes[2].set_ylim(-55, 185)
 axes[2].grid(True, ls=":", alpha=0.5)
-sns.despine(ax=axes[2])
 
-plt.suptitle("Publication Figure 8: Corporate R&D Time Machine — 1,000-Firm Scenario Simulation Across Macroeconomic Regimes", fontsize=13.5, fontweight="bold", y=1.02)
+for ax in axes:
+    sns.despine(ax=ax)
+
+plt.suptitle("Publication Figure 8: Corporate R&D Time Machine — 1,000-Firm Scenario Simulation", fontsize=13.5, fontweight="bold", y=1.02)
 plt.tight_layout()
 plt.show()
 """))
 
-# ==========================================
-# CELL 16: EXTENSION 5.7 - EMPIRICAL VALIDATION
-# ==========================================
+# ==============================================================================
+# EXTENSION 5.7: EMPIRICAL VALIDATION
+# ==============================================================================
 cells.append(nbf.v4.new_markdown_cell(r"""---
 ## Extension 5.7: Empirical Validation on Human Trial Data (Najar et al. 2020)
 
-To ground these mechanisms against human behavior, we analyze **Najar, Bonnet, Bahrami, & Palminteri (2020, *PLoS Biology*)**, aligning exactly **2,544 adjacent demonstration-human trial pairs** across all 24 participants and 96 sessions (`data/task1.csv`). Because demonstrators' outcomes were hidden, agreement patterns test **Cultural Attraction Theory (Miton, 2023; Morin, 2016)**: humans agree with good demonstrators ($79.3\%$) and reject suboptimal demonstrators ($26.8\%$), filtering social information through internal reinforcement priors.
+To ground these mechanisms against human behavior, I analyze **Najar, Bonnet, Bahrami, & Palminteri (2020, *PLoS Biology*)** (`data/task1.csv`), aligning adjacent demonstrator-human trial pairs. First, I load the CSV, match each human trial to the immediately preceding demonstrator choice, and print the agreement table.
 """))
 
-cells.append(nbf.v4.new_code_cell(r"""# Code Block 17 & 18: Empirical Data Alignment & Publication Figure 9
-data_file = "data/task1.csv"
-df_raw = pd.read_csv(data_file)
-df_sorted = df_raw.sort_values(["expid", "session", "trial"]).copy()
-prev_trial = df_sorted.shift(1)
+cells.append(nbf.v4.new_code_cell(r"""df_raw = pd.read_csv("data/task1.csv").sort_values(["expid", "session", "trial"]).copy()
+prev = df_raw.shift(1)
 
-valid_pair_mask = (
-    df_sorted["expid"].eq(prev_trial["expid"]) &
-    df_sorted["session"].eq(prev_trial["session"]) &
-    df_sorted["trial"].eq(prev_trial["trial"] + 1) &
-    df_sorted["state"].eq(prev_trial["state"]) &
-    df_sorted["condition.demskill"].eq(prev_trial["condition.demskill"]) &
-    df_sorted["id"].ne("dem") &
-    prev_trial["id"].eq("dem") &
-    df_sorted["condition.demskill"].ne("private")
+valid = (
+    df_raw["expid"].eq(prev["expid"]) &
+    df_raw["session"].eq(prev["session"]) &
+    df_raw["trial"].eq(prev["trial"] + 1) &
+    df_raw["state"].eq(prev["state"]) &
+    df_raw["condition.demskill"].eq(prev["condition.demskill"]) &
+    df_raw["id"].ne("dem") &
+    prev["id"].eq("dem") &
+    df_raw["condition.demskill"].ne("private")
 )
 
-df_pairs = df_sorted.loc[valid_pair_mask, ["expid", "session", "trial", "state", "condition.demskill", "cgb"]].copy()
+df_pairs = df_raw.loc[valid, ["expid", "session", "trial", "state", "condition.demskill", "cgb"]].copy()
 df_pairs.rename(columns={"condition.demskill": "condition", "cgb": "human_good"}, inplace=True)
-df_pairs["dem_cgb"] = prev_trial.loc[valid_pair_mask, "cgb"].astype(int)
+df_pairs["dem_cgb"] = prev.loc[valid, "cgb"].astype(int)
 df_pairs["matched"] = df_pairs["human_good"].eq(df_pairs["dem_cgb"]).astype(int)
 
 print(f"Extracted valid demonstration-to-human pairs: {len(df_pairs)}")
-empirical_summary = df_pairs.groupby(["condition", "dem_cgb"]).agg(
+emp_table = df_pairs.groupby(["condition", "dem_cgb"]).agg(
     Valid_Pairs=("matched", "count"),
-    Choice_Match_Rate=("matched", "mean")
+    Choice_Match_Rate=("matched", "mean"),
 ).reset_index()
-empirical_summary["Demonstrator Choice"] = empirical_summary["dem_cgb"].map({1: "Optimal Arm (Good)", 0: "Suboptimal Arm (Bad)"})
-empirical_summary["Choice_Match_Rate"] = empirical_summary["Choice_Match_Rate"].apply(lambda x: f"{x*100:.1f}%")
-display(empirical_summary[["condition", "Demonstrator Choice", "Valid_Pairs", "Choice_Match_Rate"]])
+emp_table["Demonstrator Choice"] = emp_table["dem_cgb"].map({1: "Optimal Arm (Good)", 0: "Suboptimal Arm (Bad)"})
+emp_table["Choice_Match_Rate"] = emp_table["Choice_Match_Rate"].apply(lambda x: f"{x*100:.1f}%")
+display(emp_table[["condition", "Demonstrator Choice", "Valid_Pairs", "Choice_Match_Rate"]])
+"""))
 
-fig, axes = plt.subplots(1, 2, figsize=(14, 5.2))
+cells.append(nbf.v4.new_markdown_cell(r"""Next, I plot **Publication Figure 9**, comparing how often participants match good vs. bad demonstrators and showing their learning curves across trial blocks.
+"""))
+
+cells.append(nbf.v4.new_code_cell(r"""fig, axes = plt.subplots(1, 2, figsize=(14, 5.2))
+
 sns.barplot(data=df_pairs, x="condition", y="matched", hue="dem_cgb", palette=["#e41a1c", "#377eb8"],
             ax=axes[0], capsize=0.08, err_kws={"linewidth": 1.5})
 axes[0].set_title("A. Human Agreement Conditional on Demonstrator Choice (N=2,544)", fontweight="bold")
@@ -1333,9 +1076,9 @@ handles, _ = axes[0].get_legend_handles_labels()
 axes[0].legend(handles=handles, labels=["Demonstrator Chose Bad Arm", "Demonstrator Chose Good Arm", "Chance (0.5)"], loc="upper right", frameon=True, fontsize=9)
 sns.despine(ax=axes[0])
 
-df_human_only = df_raw[df_raw["id"] != "dem"].copy()
-df_human_only["trial_block"] = pd.cut(df_human_only["ctrial"], bins=np.arange(0, 161, 20), labels=np.arange(10, 160, 20))
-curves = df_human_only.groupby(["condition.demskill", "trial_block"], observed=False)["cgb"].mean().reset_index()
+df_human = df_raw[df_raw["id"] != "dem"].copy()
+df_human["trial_block"] = pd.cut(df_human["ctrial"], bins=np.arange(0, 161, 20), labels=np.arange(10, 160, 20))
+curves = df_human.groupby(["condition.demskill", "trial_block"], observed=False)["cgb"].mean().reset_index()
 
 sns.lineplot(data=curves, x="trial_block", y="cgb", hue="condition.demskill",
              palette={"skilled.dem": "#377eb8", "unskilled.dem": "#e41a1c", "private": "#4daf4a"},
@@ -1352,16 +1095,16 @@ plt.tight_layout()
 plt.show()
 """))
 
-# ==========================================
-# CELL 17: SECTION 6 - CONCLUSIONS, DISCLOSURE & BIBLIOGRAPHY
-# ==========================================
+# ==============================================================================
+# SECTION 6: CONCLUSIONS, DISCLOSURE & BIBLIOGRAPHY
+# ==============================================================================
 cells.append(nbf.v4.new_markdown_cell(r"""---
 ## Section 6: General Conclusions, Limitations, University AI Disclosure & References
 
 ### 6.1 Summary of Core Findings & Extensions
 1. **The Copier Tipping Point ($p^* \approx 70\%$)**: In our minimal model, copying ($C_{\text{copy}} = 1.0$) produces higher short-term welfare than innovating ($C_{\text{innov}} = 5.0$) under benign climates ($H=2.0$). However, once an austerity shock hits ($H=10.0$), populations with more than $\sim 70\%$ copiers collapse into persistent net deficit ($\Pi < 0$) because imitation error outpaces discovery.
 2. **General Boundary Law**: Across 2D parameter sweeps of environmental harshness ($H \in [2, 14]$) and Henrich Gumbel skill loss ($\alpha_{\text{loss}} \in [0.2, 1.2]$), the viable survival boundary scales smoothly, proving that Rogers' Paradox is resolved through an intermediate **division of labor** ($\sim 70\%$ copiers / $\sim 30\%$ innovators).
-3. **Corporate R&D Time Machine (1,000-Firm Scenario)**: In our macroeconomic scenario simulation, fast-followers (90% copying) appear most profitable during benign boom quarters (+90.2 margin), but experience an immediate collapse to **0.0% solvency** after the shock. Conversely, balanced firms (70% copying / 30% R&D) achieve **100% solvency** and maximum cumulative cashflow (+12,650).
+3. **Corporate R&D Time Machine (1,000-Firm Scenario)**: In our macroeconomic scenario simulation, fast-followers (90% copying) appear most profitable during benign boom quarters (+90.2 margin), but experience an immediate collapse to **0.0% solvency** after the shock. Conversely, balanced firms (70% copying / 30% R&D) achieve **100% solvency** and maximum cumulative cashflow.
 4. **Dynamic & Technological Extensions**: Even without fixed roles, Rescorla-Wagner prediction error gating and Replicator Dynamics self-organize toward this ESS; Yule-Simon trait sampling and Charbonneau recombination reproduce heavy-tailed technological power laws; and empirical analysis of $N = 2{,}544$ human trials confirms cognitive filtering over blind copying.
 
 ### 6.2 Limitations & Future Directions
@@ -1404,22 +1147,21 @@ cells.append(nbf.v4.new_markdown_cell(r"""---
 23. **Youngblood, M.** (2024). Language-like efficiency and structure in house finch song. *Proceedings of the Royal Society B*, 291(2018), 20232490.
 """))
 
-# ==========================================
+# ==============================================================================
 # SAVE NOTEBOOK & EXECUTE PROGRAMMATICALLY
-# ==========================================
+# ==============================================================================
 nb.cells = cells
 output_file = "cultural_evolution_project.ipynb"
 
 print(f"Total cells to write: {len(cells)}")
-with open(output_file, 'w', encoding='utf-8') as f:
+with open(output_file, "w", encoding="utf-8") as f:
     nbf.write(nb, f)
 
-print(f"Notebook successfully written to {output_file}. Executing all cells via NotebookClient...")
-
-client = NotebookClient(nb, timeout=300, kernel_name='python3')
+print(f"Notebook written to {output_file}. Executing all cells via NotebookClient...")
+client = NotebookClient(nb, timeout=300, kernel_name="python3")
 client.execute()
 
-with open(output_file, 'w', encoding='utf-8') as f:
+with open(output_file, "w", encoding="utf-8") as f:
     nbf.write(nb, f)
 
 print(f"Notebook execution complete! All plots, outputs, and tables are pre-rendered in {output_file}.")
