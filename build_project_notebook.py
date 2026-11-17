@@ -50,28 +50,28 @@ cells.append(nbf.v4.new_markdown_cell(r"""# When Does Copying Stop Paying Off? E
 
 ## Abstract
 
-> In cultural and technological evolution, copying existing solutions is cheap, whereas inventing new ones is costly. While minimizing effort pushes actors toward imitation, copying alone creates no new knowledge—it only redistributes existing techniques that erode through transmission error (Henrich, 2004). Addressing Rogers' Paradox (1988) in the context of corporate R&D and patent evolution (Charbonneau, 2015), this project asks: **how much copying can a system afford before an environmental or market shock triggers technological collapse?** To answer this, we build a minimal agent-based model where agents either pay a high cost for R&D innovation or cheaply copy existing patents, varying the copier share from $0\%$ to $100\%$. While heavy copying ($80\text{--}90\%$) maximizes short-term efficiency in stable times (the *"Free-Rider Illusion"*), a sudden scarcity shock triggers collapse above a critical copier threshold ($p^* \approx 70\%$), demonstrating why technological and corporate R&D systems require a minimum innovator core ($\sim 30\%$) to survive crises.
+> In cultural and technological evolution, copying existing solutions is cheap, whereas inventing new ones is costly. Minimizing effort pushes individuals toward imitation, yet copying alone creates no new knowledge—it only redistributes existing techniques that erode through transmission error (Henrich, 2004). Addressing Rogers' Paradox (1988) in the context of corporate R&D and patent evolution (Charbonneau, 2015), this project asks: **how much copying can a system afford before an environmental or market shock triggers collapse?** To answer this, I build a minimal agent-based model where agents either pay a high cost for R&D innovation or cheaply copy existing patents, varying the copier share from $0\%$ to $100\%$. While heavy copying ($80\text{--}90\%$) gives the highest short-term payoff in stable times (the *"Free-Rider Illusion"*), a sudden shock triggers collapse above a critical copier threshold ($p^* \approx 70\%$), showing why technological and R&D systems need a minimum innovator core ($\sim 30\%$) to survive crises.
 
 ---
 
-## Master Project Pipeline & Architecture
+## Project Overview & Structure
 
-Following **Professor Alexey Koshevoy's** supervisory guidance (*"Start with the simplest model first, reflect deeply on theory, think about a general case, and add complex extensions at the end"*), this notebook follows a four-stage pipeline divided into **Part I (Core Minimal Model)** and **Part II (Extensions & Applications)**:
+Following **Professor Alexey Koshevoy's** advice (*"Start with the simplest model first, reflect on the theory, think about a general case, and add extensions at the end"*), this notebook is split into **Part I (Core Minimal Model)** and **Part II (Extensions)**:
 
-![Master Project Pipeline](assets/figures/fig0_project_pipeline.png)
+![Project Pipeline](assets/figures/fig0_project_pipeline.png)
 
-### Quick Navigation Guide
-* **Part I — Core Minimal Model & General Case Analysis (Sections 1–4)**:
-  * **Section 1**: Research Question, Corporate R&D / Patent Framing & Theoretical Motivation
-  * **Section 2**: Formal Specification & Modular Simulation Functions ($\Pi_i = z_i - H - C$)
-  * **Section 3**: Core Results — The $0\% \to 100\%$ Copier Sweep (**Fig 1**), 2D General Case Phase Diagrams (**Fig 2**), & Gumbel Tail Analysis (**Fig 3**)
-  * **Section 4**: Deep Theoretical Reflection (Henrich 2004, Charbonneau 2015, Rogers 1988, Corporate Technical Debt & AI Collapse)
-* **Part II — Secondary Extensions & Real-World Applications ("Extras", Section 5)**:
-  * **Extensions 5.1–5.2**: Adaptive Social Brain ($\Delta$-rule) & Endogenous Replicator Dynamics (**Figs 4–5**)
-  * **Extension 5.3**: Interactive 60-FPS Parameter Sandbox
-  * **Extensions 5.4–5.5**: Yule-Simon Rank-Frequency & Charbonneau Modular Patent Citation Networks (**Figs 6–7**)
-  * **Extension 5.6**: Macro-Technological Scenario Simulator — **The Corporate R&D Time Machine** ($N=1{,}000$ firms, **Fig 8**)
-  * **Extension 5.7**: Empirical Validation on Human Social Learning Trials ($N=2{,}544$ pairs, **Fig 9**)
+### Contents
+* **Part I — Core Model & General Case (Sections 1–4)**:
+  * **Section 1**: Research Question & Corporate R&D / Patent Framing
+  * **Section 2**: Model Rules & Simulation Setup ($\Pi_i = z_i - H - C$)
+  * **Section 3**: Results — $0\% \to 100\%$ Copier Sweep (**Fig 1**), 2D Phase Diagrams (**Fig 2**), & Gumbel Error Distribution (**Fig 3**)
+  * **Section 4**: Theoretical Discussion (Henrich 2004, Charbonneau 2015, Rogers 1988, Corporate R&D & AI Collapse)
+* **Part II — Extensions ("Extras", Section 5)**:
+  * **Extensions 5.1–5.2**: Adaptive Learning ($\Delta$-rule) & Replicator Dynamics (**Figs 4–5**)
+  * **Extension 5.3**: Interactive Browser Simulation
+  * **Extensions 5.4–5.5**: Yule-Simon Rank-Frequency & Charbonneau Patent Citations (**Figs 6–7**)
+  * **Extension 5.6**: Corporate R&D Scenario Simulator ($N=1{,}000$ firms, **Fig 8**)
+  * **Extension 5.7**: Empirical Check on Human Data (Najar et al. 2020, **Fig 9**)
 """))
 
 # ==============================================================================
@@ -80,28 +80,28 @@ Following **Professor Alexey Koshevoy's** supervisory guidance (*"Start with the
 cells.append(nbf.v4.new_markdown_cell(r"""---
 # Part I: Core Model & General Theory
 
-## Section 1: Research Question & Theoretical Motivation
+## Section 1: Research Question & Motivation
 
-### 1.1 The Core Question in Plain Terms
+### 1.1 The Core Question
 
-> **Core Research Question**:  
+> **Research Question**:  
 > *In a cultural species where copying others is cheap but imperfect, and inventing new solutions is costly, how much social copying can a population tolerate before an environmental scarcity shock triggers cultural collapse?*
 
-This question directly addresses the central tension in **Rogers' Paradox (1988)** and **Henrich's (2004) treadmill model** under changing environmental pressure:
-1. If copying is cheap, agents naturally gravitate toward it (**Principle of Least Effort as a transmission bias**).
-2. However, copying does not generate novel adaptive information; it only redistributes existing skills, which decay on average due to imperfect replication (**Henrich’s Gumbel skill loss**).
-3. In easy, forgiving environments, relying heavily on copying looks like an optimal energy-saving strategy (the **"Free-Rider Illusion"**).
-4. When environmental austerity strikes (higher living/metabolic demands $H$), at what exact proportion of copiers ($p^*$) does cumulative culture fail to generate enough value to pay survival costs?
+This question looks at **Rogers' Paradox (1988)** and **Henrich's (2004) skill-loss model** when environmental conditions worsen:
+1. Because copying is cheap, agents naturally prefer it (**Principle of Least Effort**).
+2. However, copying does not create new knowledge; it only passes on existing skills, which lose accuracy on average (**Henrich’s Gumbel skill loss**).
+3. In easy environments, relying mostly on copying looks like the smartest, lowest-cost strategy (the **"Free-Rider Illusion"**).
+4. When conditions suddenly get harder (higher living costs $H$), at what share of copiers ($p^*$) does the group fail to produce enough skill to cover its costs?
 
-### 1.2 Real-World Application: Corporate R&D, Patents & Technological Obsolescence
-As highlighted in discussion with **Professor Alexey Koshevoy**, this exact dynamical tension governs **corporate industrial policy and patent strategy**:
-* **Frontier In-House R&D** ($C_{\text{innov}} = 5.0$): High burn rate, risky discovery increments ($\Delta z \sim \text{Exp}$), but generates novel intellectual property and patent breakthroughs.
-* **Fast-Follower Copying & Licensing** ($C_{\text{copy}} = 1.0$): Cheap adoption of open standards and competitor patents, highly efficient in low-interest boom times, but produces no foundational patents.
-* **Technological Obsolescence** ($\alpha_{\text{loss}} = 0.8$): Copied technology depreciates over time unless actively refreshed by in-house engineering competence.
-* **Macroeconomic Austerity Crisis** ($H = 2.0 \to 10.0$): When market competition tightens or regulatory/borrowing costs surge, firms relying on $>70\%$ imitation experience technological insolvency ($\Pi < 0$).
+### 1.2 Real-World Application: Corporate R&D & Patents
+As discussed in class with **Professor Alexey Koshevoy**, the same trade-off applies to **corporate R&D and patent strategy**:
+* **In-House R&D** ($C_{\text{innov}} = 5.0$): Expensive and uncertain ($\Delta z \sim \text{Exp}$), but produces original patents and technical breakthroughs.
+* **Fast-Follower Copying & Licensing** ($C_{\text{copy}} = 1.0$): Cheap adoption of open standards and competitor patents; works well in boom times, but creates no new knowledge.
+* **Technological Obsolescence** ($\alpha_{\text{loss}} = 0.8$): Copied technology loses value over time unless maintained by internal engineering expertise.
+* **Market Shock** ($H = 2.0 \to 10.0$): When borrowing costs rise or competition tightens, firms relying on $>70\%$ copying cannot cover their operating costs ($\Pi < 0$).
 
-### 1.3 Why Start with a Minimal Model of Technological Evolution?
-As noted by **Charbonneau (2015, 2018)**, formal mathematical and agent-based modeling of **technological evolution** remains surprisingly sparse—aside from **Henrich's (2004)** classic skill-loss model, few simple, general models quantify how individual learning costs and imitation error interact under ecological pressure. Starting with fixed population mixtures ($p \in \{0\%, 10\%, \dots, 100\%\}$ copiers) eliminates unnecessary cognitive assumptions, allowing clean causal isolation of the phase boundary across general parameter regimes.
+### 1.3 Why Start with a Minimal Model?
+As **Charbonneau (2015, 2018)** points out, formal models of **technological evolution** are still relatively rare—outside of **Henrich's (2004)** model, there are few simple baselines connecting learning costs, imitation error, and environmental pressure. Testing fixed mixtures ($p \in \{0\%, 10\%, \dots, 100\%\}$ copiers) keeps the rules simple and makes it easy to see where the tipping point occurs.
 """))
 
 # ==============================================================================
@@ -467,28 +467,28 @@ plt.show()
 # PART I - SECTION 4: THEORETICAL REFLECTION
 # ==============================================================================
 cells.append(nbf.v4.new_markdown_cell(r"""---
-## Section 4: Theoretical Reflection on Technological Cultural Evolution
+## Section 4: Theoretical Discussion
 
-Following Professor Koshevoy's emphasis on prioritizing **theoretical reflection over technical clutter**, the core results yield four overarching insights for cultural evolution:
+Following Prof. Koshevoy's advice to focus on the theoretical meaning rather than technical complexity, the core results point to four main conclusions:
 
-### 4.1 Why Technological Evolution Needs General Minimal Models (Henrich 2004 & Charbonneau 2015)
-Aside from **Henrich's (2004)** classic demographic treadmill model—which showed how reductions in effective population size drive cumulative skill loss—mathematical modeling of technological trajectories remains remarkably under-explored (**Charbonneau, 2015, 2018**). Henrich modeled *population size* ($N$) as the primary driver of cultural loss. Our model shifts the lens to **learning strategy composition ($p$ copiers vs. $1-p$ innovators)** under fluctuating environmental pressure ($H$). Even when population size $N$ stays constant, an excess proportion of imitators triggers the exact same downward spiral observed in Tasmanian demographic bottlenecks.
+### 4.1 Technological Evolution Beyond Population Size (Henrich 2004 & Charbonneau 2015)
+Outside of **Henrich's (2004)** classic demographic model—which showed how drops in population size cause skill loss—mathematical models of technological evolution are still relatively rare (**Charbonneau, 2015, 2018**). Henrich focused on *population size* ($N$) as the main driver of cultural loss. Here, I keep $N$ fixed and vary **learning strategy composition ($p$ copiers vs. $1-p$ innovators)** under changing environmental pressure ($H$). Even when population size stays constant, having too many copiers produces the same downward spiral.
 
 ### 4.2 The "Free-Rider Illusion" & Least Effort as a Transmission Bias
-Why do societies drift dangerously close to collapse? Our sweep exposes a deceptive evolutionary trap:
-* Under benign conditions ($H = 2.0$), increasing the copier share up to $80\%-90\%$ raises immediate per-generation payoffs because copiers avoid paying the heavy innovation fee ($C_{\text{innov}} = 5.0$). This operationalizes **Zipf's Principle of Least Effort** as an economic **transmission bias**.
-* However, this efficiency surplus is illusory if the environment becomes unstable. Because no complex tools are invented by copying alone, the cultural baseline erodes under Henrich's Gumbel loss ($\alpha_{\text{loss}} = 0.8$). When harshness jumps ($H = 10.0$), populations above $p^* \approx 70\%$ lack the innovative replenishment rate necessary to sustain skill above survival costs, collapsing into negative payoff ($\Pi < 0$).
+Why do groups end up close to collapse? The sweep highlights a simple trap:
+* In easy environments ($H = 2.0$), pushing the copier share up to $80\text{--}90\%$ raises immediate payoffs because most agents avoid the innovation cost ($C_{\text{innov}} = 5.0$). This treats **Zipf's Principle of Least Effort** as an economic **transmission bias**.
+* However, those short-term gains hide a long-term weakness. Because copying alone adds no new inventions, average skill slowly erodes under Henrich's Gumbel noise ($\alpha_{\text{loss}} = 0.8$). When conditions harden ($H = 10.0$), populations above $p^* \approx 70\%$ do not invent fast enough to cover living costs, and mean payoff drops below zero ($\Pi < 0$).
 
 ### 4.3 Resolving Rogers' Paradox via Ecological Thresholds
-Alan Rogers (1988) argued that social learning provides zero net fitness benefit at equilibrium because imitators dilute the adaptive value of innovation. Previous resolutions—such as Enquist et al.'s (2007) *Critical Social Learning*—relied on sophisticated individual decision rules. Our general case phase diagram demonstrates a more **parsimonious ecological resolution**: 
-* Cumulative welfare does **not** require a population of 100% tireless innovators (which wastes energy on constant rediscovery), nor does it collapse into Rogers' equilibrium across all states.
-* Instead, maximizing cumulative welfare favors an **intermediate division of cognitive labor** ($\sim 70\%$ copiers exploiting the breakthroughs of $\sim 30\%$ innovators), with the exact viable boundary shifting smoothly as harshness $H$ or imitation noise $\alpha_{\text{loss}}$ increases (Figure 2).
+Alan Rogers (1988) showed that social learning gives zero net fitness gain at equilibrium because imitators dilute the benefit of innovation. Later solutions—like Enquist et al.'s (2007) *Critical Social Learning*—relied on more complex individual decision rules. My phase diagram suggests a simpler ecological answer:
+* Long-term welfare does **not** require $100\%$ innovators (which wastes energy on constant rediscovery), nor does it fail everywhere.
+* Instead, cumulative welfare peaks at an intermediate **division of labor** ($\sim 70\%$ copiers using the discoveries of $\sim 30\%$ innovators), with the exact survival boundary shifting smoothly as harshness $H$ or imitation error $\alpha_{\text{loss}}$ increases (Figure 2).
 
-### 4.4 Real-World Value Beyond Anthropology: Corporate R&D, Patents & AI
-1. **The Corporate Patent Dilemma & Technical Debt**: 
-   In corporate economics, technology firms face an exact analog of Rogers' Paradox. In benign, low-interest economic climates ($H=2.0$), fast-followers that cut internal R&D ($C_{\text{innov}}=5.0$) and rely on licensing competitor patents or adopting open standards ($C_{\text{copy}}=1.0$) boast superior short-term profit margins (+90.2 vs +79.2 for pure innovators). However, because borrowed technologies undergo rapid obsolescence ($\alpha_{\text{loss}}=0.8$), these firms accumulate deep technical debt. When a macroeconomic shock strikes ($H=10.0$ — capital costs rise, trade barriers emerge, or regulatory standards tighten), firms with less than ~30% in-house R&D suffer catastrophic insolvency ($\Pi < 0$).
-2. **Preventing AI "Model Collapse" (Shumailov et al., *Nature* 2024)**: 
-   Modern generative AI models trained recursively on synthetic AI outputs mirror our $>80\%$ copier regime: without continuous grounding in external human novelty ("innovators"), recursive copying collapses distributional tails and degrades model competence.
+### 4.4 Real-World Applications: Corporate R&D, Patents & AI
+1. **Corporate R&D and Technical Debt**: 
+   Technology companies face a similar trade-off. In low-interest boom years ($H=2.0$), fast-followers that cut internal R&D ($C_{\text{innov}}=5.0$) and license existing patents or copy open standards ($C_{\text{copy}}=1.0$) show higher short-term margins ($+90.2$ vs. $+79.2$ for pure innovators). Because copied knowledge ages over time ($\alpha_{\text{loss}}=0.8$), these firms build up hidden technical debt. When a market shock hits ($H=10.0$), firms with less than $\sim 30\%$ in-house R&D fall into deficit ($\Pi < 0$).
+2. **AI "Model Collapse" (Shumailov et al., *Nature* 2024)**: 
+   Training generative AI models recursively on synthetic AI outputs mirrors the $>80\%$ copier regime: without fresh human data ("innovators"), repeated copying narrows the distribution and degrades quality.
 """))
 
 # ==============================================================================
@@ -496,32 +496,30 @@ Alan Rogers (1988) argued that social learning provides zero net fitness benefit
 # ==============================================================================
 cells.append(nbf.v4.new_markdown_cell(r"""---
 ---
-# Part II: Advanced Extensions & Further Explorations ("Extras")
+# Part II: Extensions & Applications ("Extras")
 
-> [!NOTE]
-> **Structural Note (Per Professor Koshevoy's Recommendation)**:
-> Having established and interpreted the simplest core model and its general phase boundaries in **Part I**, this section explores seven secondary theoretical, empirical, and applied extensions:
-> 1. **Extension 5.1**: Can individuals *discover* the optimal division of labor dynamically via simple prediction-error learning (**The Adaptive Social Brain**)?
-> 2. **Extension 5.2**: Does natural selection (**Discrete Replicator Dynamics**) autonomously converge on the ~70/30 ESS without central design?
-> 3. **Extension 5.3**: Interactive 60-FPS Browser Simulation Sandbox.
-> 4. **Extension 5.4**: The Professor's **Yule-Simon Rank-Frequency Model** (Neutral drift vs. frequency-independence vs. prestige/conformist bias).
-> 5. **Extension 5.5**: **Charbonneau's Modular Patent Recombination** (Patent citations & cumulative technology).
-> 6. **Extension 5.6**: **Corporate R&D Time Machine** (Macro-technological scenario simulator for 1,000 competing corporate firms).
-> 7. **Extension 5.7**: **Empirical Human Validation** on trial-by-trial choices (**Najar et al., 2020**).
+Following Prof. Koshevoy's suggestion (*"start with the simplest idea, and add anything extra at the end"*), Part II explores seven follow-up extensions built on top of the core model:
+1. **Extension 5.1**: Can agents learn the ~70/30 split on their own via simple prediction-error updates (**Adaptive Social Learning**)?
+2. **Extension 5.2**: Does selection (**Discrete Replicator Dynamics**) naturally converge toward the ~70/30 balance?
+3. **Extension 5.3**: Interactive browser simulation sandbox.
+4. **Extension 5.4**: The **Yule-Simon Rank-Frequency Model** (neutral drift vs. frequency-independence vs. prestige and conformist bias).
+5. **Extension 5.5**: **Charbonneau's Patent Recombination** (patent citations and heavy-tailed distributions).
+6. **Extension 5.6**: **Corporate R&D Scenario Simulator** (tracking 1,000 firms over 100 quarters).
+7. **Extension 5.7**: **Empirical Check** on human trial data (**Najar et al., 2020**).
 """))
 
 # ==============================================================================
 # EXTENSION 5.1: ADAPTIVE SOCIAL BRAIN
 # ==============================================================================
-cells.append(nbf.v4.new_markdown_cell(r"""## Extension 5.1: Dynamic Self-Organization — The Adaptive Social Brain & Ensemble Trajectories
+cells.append(nbf.v4.new_markdown_cell(r"""## Extension 5.1: Adaptive Social Learning (Q-Learning)
 
-In Part I, copier and innovator shares were held fixed. A natural follow-up question is: **how could agents discover the ~70/30 division of labor dynamically on their own?**
+In Part I, copier and innovator shares were kept fixed. Next, I test whether agents can adjust their own strategy dynamically using a simple learning rule.
 
-### Mathematical Rule (Rescorla-Wagner / Q-Learning Gating)
-Adaptive agents track expected action values $\mathbf{Q}_i = [Q_i(\text{COPY}), Q_i(\text{INNOV})]$, choose stochastically via Softmax ($\tau = 1.0$), and update via Reward Prediction Error ($\eta = 0.35$):
+### Learning Rule (Rescorla-Wagner / Q-Learning)
+Adaptive agents track expected action values $\mathbf{Q}_i = [Q_i(\text{COPY}), Q_i(\text{INNOV})]$, choose via Softmax ($\tau = 1.0$), and update via prediction error ($\eta = 0.35$):
 $$\delta_i(t) = \Pi_i(t) - Q_i(a_i(t)), \qquad Q_i(a_i(t)) \leftarrow Q_i(a_i(t)) + \eta \cdot \delta_i(t)$$
 
-First, I write a helper function `run_strategy(mode, rng)` to test 5 benchmark strategies: Pure Copiers (`0`), Pure Innovators (`1`), Homogeneous Adaptive (`2`), Static 5% Mixture (`3`), and a Heterogeneous Society (`4`: 80% Copiers, 10% Innovators, 10% Adaptive).
+First, I write a helper function `run_strategy(mode, rng)` to compare 5 cases: Pure Copiers (`0`), Pure Innovators (`1`), Homogeneous Adaptive (`2`), Static 5% Mixture (`3`), and a Mixed Group (`4`: 80% Copiers, 10% Innovators, 10% Adaptive).
 """))
 
 cells.append(nbf.v4.new_code_cell(r"""def softmax_pick(q_vals, rng, tau=1.0):
@@ -892,15 +890,15 @@ plt.show()
 # EXTENSION 5.6: CORPORATE R&D TIME MACHINE
 # ==============================================================================
 cells.append(nbf.v4.new_markdown_cell(r"""---
-## Extension 5.6: Macro-Technological Scenario Simulator ("Corporate R&D Time Machine")
+## Extension 5.6: Corporate R&D Scenario Simulator (1,000 Firms)
 
-To translate our findings directly into **corporate economics and industrial patent policy** (as discussed with Prof. Alexey Koshevoy), this module stress-tests an industry of **$N = 1{,}000$ competing firms** over **$T = 100$ quarterly epochs** across four corporate R&D strategies:
-1. **Fast-Follower Swarm ($90\%$ Licensing/Copying, $10\%$ In-House R&D)**
-2. **Optimal Division of Labor ($70\%$ Licensing/Copying, $30\%$ In-House R&D)**
-3. **Balanced Tech Enterprise ($50\%$ Licensing/Copying, $50\%$ In-House R&D)**
-4. **DeepTech Frontier Pioneer ($10\%$ Licensing/Copying, $90\%$ In-House R&D)**
+To see how this model behaves in a corporate R&D setting (as discussed with Prof. Koshevoy), I simulate **$N = 1{,}000$ competing firms** over **$T = 100$ quarters** across four R&D strategies:
+1. **Fast-Follower ($90\%$ Licensing/Copying, $10\%$ In-House R&D)**
+2. **Balanced Division of Labor ($70\%$ Licensing/Copying, $30\%$ In-House R&D)**
+3. **50/50 Tech Firm ($50\%$ Licensing/Copying, $50\%$ In-House R&D)**
+4. **Frontier Pioneer ($10\%$ Licensing/Copying, $90\%$ In-House R&D)**
 
-First, I write `run_firm_cohort()` to simulate 1,000 firms over 100 quarters using our same `copy_peers()` helper and payoff rule, tracking solvency (% of firms with margin $\ge 0$) and patent portfolio value.
+First, I write `run_firm_cohort()` to track 1,000 firms over 100 quarters using `copy_peers()` and our payoff rule, recording solvency (% of firms with margin $\ge 0$) and patent portfolio value.
 """))
 
 cells.append(nbf.v4.new_code_cell(r"""def run_firm_cohort(p_copy, n_firms=1000, n_quarters=100, shock_q=40, seed=42):
@@ -1099,17 +1097,17 @@ plt.show()
 # SECTION 6: CONCLUSIONS, DISCLOSURE & BIBLIOGRAPHY
 # ==============================================================================
 cells.append(nbf.v4.new_markdown_cell(r"""---
-## Section 6: General Conclusions, Limitations, University AI Disclosure & References
+## Section 6: Conclusions, Limitations, AI Disclosure & References
 
-### 6.1 Summary of Core Findings & Extensions
-1. **The Copier Tipping Point ($p^* \approx 70\%$)**: In our minimal model, copying ($C_{\text{copy}} = 1.0$) produces higher short-term welfare than innovating ($C_{\text{innov}} = 5.0$) under benign climates ($H=2.0$). However, once an austerity shock hits ($H=10.0$), populations with more than $\sim 70\%$ copiers collapse into persistent net deficit ($\Pi < 0$) because imitation error outpaces discovery.
-2. **General Boundary Law**: Across 2D parameter sweeps of environmental harshness ($H \in [2, 14]$) and Henrich Gumbel skill loss ($\alpha_{\text{loss}} \in [0.2, 1.2]$), the viable survival boundary scales smoothly, proving that Rogers' Paradox is resolved through an intermediate **division of labor** ($\sim 70\%$ copiers / $\sim 30\%$ innovators).
-3. **Corporate R&D Time Machine (1,000-Firm Scenario)**: In our macroeconomic scenario simulation, fast-followers (90% copying) appear most profitable during benign boom quarters (+90.2 margin), but experience an immediate collapse to **0.0% solvency** after the shock. Conversely, balanced firms (70% copying / 30% R&D) achieve **100% solvency** and maximum cumulative cashflow.
-4. **Dynamic & Technological Extensions**: Even without fixed roles, Rescorla-Wagner prediction error gating and Replicator Dynamics self-organize toward this ESS; Yule-Simon trait sampling and Charbonneau recombination reproduce heavy-tailed technological power laws; and empirical analysis of $N = 2{,}544$ human trials confirms cognitive filtering over blind copying.
+### 6.1 Summary of Results
+1. **The Copier Tipping Point ($p^* \approx 70\%$)**: In the minimal model, copying ($C_{\text{copy}} = 1.0$) gives higher short-term payoff than innovating ($C_{\text{innov}} = 5.0$) in easy climates ($H=2.0$). Once a shock hits ($H=10.0$), populations above $\sim 70\%$ copiers fall into net deficit ($\Pi < 0$) because imitation error outpaces discovery.
+2. **General Boundary**: Across 2D sweeps of harshness ($H \in [2, 14]$) and Henrich Gumbel skill loss ($\alpha_{\text{loss}} \in [0.2, 1.2]$), the survival boundary shifts smoothly, showing that Rogers' Paradox is resolved by an intermediate **division of labor** ($\sim 70\%$ copiers / $\sim 30\%$ innovators).
+3. **Corporate R&D Simulator (1,000 Firms)**: Fast-followers (90% copying) look most profitable during boom quarters (+90.2 margin), but drop to **0.0% solvency** after the shock. Balanced firms (70% copying / 30% R&D) stay at **100% solvency** and achieve the highest cumulative cashflow.
+4. **Extensions**: Prediction-error learning (Q-learning) and Replicator Dynamics both move toward this ~70/30 split; Yule-Simon sampling and Charbonneau recombination produce heavy-tailed patent citation curves; and $N = 2{,}544$ human trials from Najar et al. (2020) confirm that people filter social information rather than copying blindly.
 
-### 6.2 Limitations & Future Directions
-1. **Network Topology**: Our baseline uses global well-mixed sampling; incorporating partially connected graphs (Derex & Boyd, 2016) could reveal spatial pockets of innovation persistence.
-2. **Simulation-Based Inference (SBI)**: Following Youngblood & Passmore (2026), future work could apply neural posterior estimation to infer empirical copier proportions and transmission loss directly from USPTO patent histories.
+### 6.2 Limitations & Next Steps
+1. **Network Structure**: The baseline assumes everyone can copy anyone in the population. Testing partially connected networks (Derex & Boyd, 2016) could show whether local clusters help preserve innovation.
+2. **Empirical Parameter Estimation**: Following Youngblood & Passmore (2026), future work could use Simulation-Based Inference (SBI) or ABC-MCMC to estimate copier ratios and skill loss directly from real USPTO patent histories.
 
 ---
 
